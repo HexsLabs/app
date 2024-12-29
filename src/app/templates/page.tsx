@@ -6,14 +6,14 @@ const templates = [
   {
     name: 'AI Chatbot',
     description:
-      'The Agoric platform makes it safe and seamless to build decentralized apps...',
+      'An AI chatbot project that leverages natural language processing to provide intelligent, real-time conversations and automated assistance for users.',
     icon: '/path-to-agoric-icon.png',
     url: '/chatbot', // Add the URL path
   },
   {
     name: 'Next.js',
     description:
-      'Akash is an open-source Supercloud that lets users buy and sell computing resources...',
+      'Next.js is a React framework that enables server-side rendering, static site generation, and optimized performance for building fast, scalable web applications.',
     icon: '/path-to-akash-icon.png',
     url: '/templates/next-js', // Add the URL path
   },
