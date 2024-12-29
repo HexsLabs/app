@@ -8,7 +8,7 @@ const DesktopOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     const handleResize = () => {
       // Check if the screen width is greater than or equal to 1024px (desktop breakpoint)
-      setIsDesktop(window.innerWidth >= 1024);
+      setIsDesktop(window.innerWidth >= 1280);
     };
 
     // Set the initial value and listen for resize events
