@@ -35,25 +35,7 @@ export const Sidebar = () => {
           Dashboard
         </Button>
         </Link>
-        <Button variant="ghost" className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white">
-        <Image 
-           src="cart.svg"
-           alt="dasboard-logo"
-           width={20}
-           height={40}
-         />
-          Store
-        </Button>
-        <Button variant="ghost" className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white">
-        <Image 
-           src="Vector.svg"
-           alt="dasboard-logo"
-           width={20}
-           height={40}
-         />
-          Playground
-        </Button>
-
+    
         <Button variant="ghost" className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white" onClick={() => router.push('/templates')}>
         <Image 
            src="Vector.svg"
@@ -62,6 +44,17 @@ export const Sidebar = () => {
            height={40}
          />
           Templates
+        </Button>
+
+        
+        <Button variant="ghost" className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white" onClick={() => router.push('/chatbot')}>
+        <Image 
+           src="Vector.svg"
+           alt="dasboard-logo"
+           width={20}
+           height={40}
+         />
+          AI
         </Button>
       </nav>
 

@@ -4,11 +4,11 @@ import Link from 'next/link'; // Import Link from next/link
 
 const templates = [
   {
-    name: 'AI Chatbot',
+    name: 'Backend',
     description:
-      'An AI chatbot project that leverages natural language processing to provide intelligent, real-time conversations and automated assistance for users.',
+      'The backend is the server-side of an application that handles data processing, business logic, database interactions, and API communication to support frontend functionality.',
     icon: '/path-to-agoric-icon.png',
-    url: '/chatbot', // Add the URL path
+    url: '/templates/backend', // Add the URL path
   },
   {
     name: 'Next.js',
