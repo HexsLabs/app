@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Paperclip, ArrowUp } from 'lucide-react';
 import TemplateShowcase from '@/components/TemplateShowcase';
+import Templates from '../templates/page';
 
 const ChatInterface = () => {
   const [input, setInput] = useState('');
@@ -48,15 +49,11 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0A0A0B] text-white">
-      {/* Main Content */}
+    <div className="flex flex-col min-h-screen bg-[#0c0d0e] text-white pt-12">
       <div className="flex-1 px-4 py-8 md:px-8 space-y-8">
-        {/* Header */}
         <h1 className="text-4xl font-bold text-center text-white">
           What can I help you ship?
         </h1>
-
-        {/* Chat Area */}
         <div className="max-w-3xl mx-auto space-y-4">
           {messages.map((message, index) => (
             <div key={index} className={`p-3 rounded-xl ${message.sender === 'user' ? 'bg-blue-600 text-right' : 'bg-gray-700 text-left'}`}>
@@ -65,18 +62,17 @@ const ChatInterface = () => {
           ))}
         </div>
 
-        {/* Input Area */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-[#12141A] rounded-xl p-4">
+          <div className="bg-gradient-to-r from-[#101012] to-[#0c0d0e] rounded-xl p-4">
             <div className="flex items-center gap-2">
-              {/* Hidden File Input */}
+           
               <input
                 type="file"
                 ref={fileInputRef}
                 style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
-              {/* Paperclip Button */}
+            
               <button
                 onClick={handlePaperclipClick}
                 className="p-1.5 rounded-md text-gray-400 hover:text-gray-300 hover:bg-gray-800"
@@ -86,12 +82,12 @@ const ChatInterface = () => {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyPress}  // Listen for Enter key press
-                placeholder="Ask a follow-up..."
+                onKeyDown={handleKeyPress}  
+                placeholder="Enter a prompt..."
                 className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-500"
               />
               <button
-                onClick={sendPrompt}  // Send prompt on button click
+                onClick={sendPrompt}  
                 className="p-1.5 rounded-md text-gray-400 hover:text-gray-300 hover:bg-gray-800"
               >
                 <ArrowUp className="w-5 h-5" />
@@ -100,13 +96,14 @@ const ChatInterface = () => {
           </div>
         </div>
 
-        {/* Templates Section */}
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Starter Templates</h2>
+        
+      
+        <div className="mr-20">
+          <div className="flex justify-between items-center mb-6 ">
+            <h2 className="text-xl font-semibold ">Starter Templates</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 ">
             <TemplateShowcase />
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#101012] text-white">
       <Head>
         <title>Backend</title>
         <link rel="icon" href="/favicon.ico" />
