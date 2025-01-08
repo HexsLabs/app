@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Paperclip, ArrowUp } from 'lucide-react';
 import TemplateShowcase from '@/components/TemplateShowcase';
-import Templates from '../templates/page';
+
 
 const ChatInterface = () => {
   const [input, setInput] = useState('');
