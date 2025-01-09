@@ -1,6 +1,6 @@
-// components/Templates.tsx
+
 import React from 'react';
-import Link from 'next/link'; // Import Link from next/link
+import Link from 'next/link';
 
 const templates = [
   {
@@ -8,14 +8,14 @@ const templates = [
     description:
       'The backend is the server-side of an application that handles data processing, business logic, database interactions, and API communication to support frontend functionality.',
     icon: '/path-to-agoric-icon.png',
-    url: '/templates/backend', // Add the URL path
+    url: '/templates/backend', 
   },
   {
     name: 'Next.js',
     description:
       'Next.js is a React framework that enables server-side rendering, static site generation, and optimized performance for building fast, scalable web applications.',
     icon: '/path-to-akash-icon.png',
-    url: '/templates/next-js', // Add the URL path
+    url: '/templates/next-js', 
   },
 ];
 
@@ -31,7 +31,7 @@ const Templates = () => {
           {templates.map((template, index) => (
             <Link key={index} href={template.url} passHref> 
               <div
-                className="bg-[#1F1F23] rounded-3xl p-4 py-16 shadow-lg border-[0.5px] border-[#FFFFFF] flex flex-col items-center cursor-pointer hover:bg-[#1F1F23] transition-colors"
+                className="bg-[#1F1F23] rounded-3xl p-4 py-16 shadow-lg border-[0.5px] border-[#FFFFFF] flex flex-col items-center cursor-pointer hover:bg-[#17171b] transition-colors"
               >
                 <h3 className="text-2xl font-semibold mb-2 ">{template.name}</h3>
                 <p className="text-gray-400 text-center">{template.description}</p>

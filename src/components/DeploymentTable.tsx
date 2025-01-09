@@ -5,7 +5,7 @@ export const DeploymentTable = () => {
   return (
     <div>
       <div className="bg-[#101012] rounded-t-lg p-3 mb-7">
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <div className="flex items-center cursor-pointer text-white">
             Asset
             {/* <ChevronDown className="ml-1 h-4 w-4" /> */}
@@ -42,12 +42,12 @@ export const DeploymentTable = () => {
         </div>
       </div>
 
-      {/* Data Section with black background */}
+
       <div className="bg-[#101012] rounded-b-lg">
         {deployments.map((deployment) => (
           <div
             key={deployment.id}
-            className="grid grid-cols-7 gap-4 p-3 hover:bg-zinc-800/20"
+            className="grid grid-cols-5 gap-4 p-3 hover:bg-zinc-800/20"
           >
             <div className="flex items-center gap-2">
               <Image src="ram.svg" alt="dasboard-logo" width={18} height={18} />

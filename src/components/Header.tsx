@@ -24,13 +24,13 @@ export const Header = () => {
           <DropdownMenuTrigger asChild>
             <Button 
               variant="outline" 
-              className="bg-white text-black hover:bg-gray-100 border-0 flex items-center gap-2 font-medium"
+              className="bg-black text-white border-0 flex items-center gap-2 font-medium"
             >
               {selected}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-white">
+          <DropdownMenuContent className="w-56 bg-black text-white">
             {options.map((option) => (
               <DropdownMenuItem
                 key={option}
