@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { LayoutTemplate, Plus, Sparkles } from "lucide-react";
 
 
 export const Sidebar = () => {
@@ -29,6 +30,7 @@ export const Sidebar = () => {
           onClick={() => router.push("/create")}
         >
           {/* <Image src="Vector.svg" alt="dasboard-logo" width={20} height={40} /> */}
+          <Plus />
           Create
         </Button>
        
@@ -37,12 +39,12 @@ export const Sidebar = () => {
             className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
             onClick={() => router.push("/")}
           >
-            {/* <Image
+            <Image
               src="Vector3.svg"
               alt="dasboard-logo"
               width={20}
               height={40}
-            /> */}
+            />
             Dashboard
           </Button>
         
@@ -53,7 +55,7 @@ export const Sidebar = () => {
           onClick={() => router.push("/templates")}
         >
           {/* <Image src="Vector.svg" alt="dasboard-logo" width={20} height={40} /> */}
-          {/* <LayoutTemplate /> */}
+          <LayoutTemplate />
           Templates
         </Button>
 
@@ -62,7 +64,16 @@ export const Sidebar = () => {
           className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
           onClick={() => router.push("/chatbot")}
         >
-          {/* <Image src="Vector.svg" alt="dasboard-logo" width={20} height={40} /> */}
+          {/* <Image src="ai2.jpg" alt="dasboard-logo" width={20} height={40} /> */}
+          {/* <Image
+              src="/ai3.png"
+              alt="dasboard-logo"
+              width={20}
+              height={40}
+              className="text-white"
+            /> */}
+            <Sparkles />
+
           AI
         </Button>
 
