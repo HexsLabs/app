@@ -1,176 +1,115 @@
-import React from "react";
-import Image from "next/image";
+'use client';
 
-export const DeploymentTable = () => {
+import { useEffect, useState } from 'react';
+import { getDeploymentStatuses } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+
+interface Deployment {
+  id: string;
+  appUrl: string;
+  monitorUrl: string;
+  load: number;
+  lastUpdated: number;
+}
+
+export function DeploymentTable() {
+  const [deployments, setDeployments] = useState<Deployment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchDeployments = async () => {
+      try {
+        const response = await getDeploymentStatuses();
+        setDeployments(Object.values(response.deployments || {}));
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch deployments',
+          variant: 'destructive',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDeployments();
+    const interval = setInterval(fetchDeployments, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [toast]);
+
+  if (loading) {
+    return <div className="text-center">Loading deployments...</div>;
+  }
+
+  if (deployments.length === 0) {
+    return (
+      <div className="text-center text-gray-400">
+        No active deployments found
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div className="bg-[#101012] rounded-t-lg p-3 mb-7">
-        <div className="grid grid-cols-5 gap-4">
-          <div className="flex items-center cursor-pointer text-white">
-            Asset
-            {/* <ChevronDown className="ml-1 h-4 w-4" /> */}
-          </div>
-          <div className="flex items-center text-white">
-            Duration{" "}
-            <span className="text-xs ml-1">
-              {/* <Repeat size={14} style={{ transform: 'rotate(90deg)' }} /> */}
-            </span>
-          </div>
-          {/* <div className="flex items-center cursor-pointer text-white">
-            Location 
-            <ChevronDown className="ml-1 h-4 w-4" />
-          </div>
-          <div className="flex items-center cursor-pointer text-white">
-            Origin 
-            <ChevronDown className="ml-1 h-4 w-4" />
-          </div> */}
-          <div className="flex items-center text-white">
-            LID
-            {/* <span className="text-xs ml-1"> 
-              <Repeat size={14} style={{ transform: 'rotate(90deg)' }} /></span> */}
-          </div>
-          <div className="flex items-center text-white">
-            Pricing/hr
-            {/* <span className="text-xs ml-1"> 
-              <Repeat size={14} style={{ transform: 'rotate(90deg)' }} /></span> */}
-          </div>
-          <div className="flex items-center text-white">
-            Consumption
-            {/* <span className="text-xs ml-1"> 
-              <Repeat size={14} style={{ transform: 'rotate(90deg)' }} /></span> */}
-          </div>
-        </div>
-      </div>
-
-
-      <div className="bg-[#101012] rounded-b-lg">
-        {deployments.map((deployment) => (
-          <div
-            key={deployment.id}
-            className="grid grid-cols-5 gap-4 p-3 hover:bg-zinc-800/20"
-          >
-            <div className="flex items-center gap-2">
-              <Image src="ram.svg" alt="dasboard-logo" width={18} height={18} />
-              {deployment.asset}
-              <span className="h-3 w-3 rounded-full">
-                {deployment.status === "error" ? (
-                  // <TriangleAlert size={18} className="bg-[#FF000033] text-[#FF5F5F] rounded-md" /> // Add the red color here
-                  <Image
-                    src="redAlert.svg"
-                    alt="dasboard-logo"
-                    width={50}
-                    height={50}
-                  />
-                ) : (
-                  <Image
-                    src="check.svg"
-                    alt="dasboard-logo"
-                    width={50}
-                    height={50}
-                  />
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-zinc-800">
+            <th className="text-left py-2 px-4">ID</th>
+            <th className="text-left py-2 px-4">App URL</th>
+            <th className="text-left py-2 px-4">Monitor URL</th>
+            <th className="text-left py-2 px-4">Load</th>
+            <th className="text-left py-2 px-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {deployments.map((deployment) => (
+            <tr key={deployment.id} className="border-b border-zinc-800">
+              <td className="py-2 px-4">{deployment.id}</td>
+              <td className="py-2 px-4">
+                <a
+                  href={deployment.appUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  {deployment.appUrl}
+                </a>
+              </td>
+              <td className="py-2 px-4">
+                {deployment.monitorUrl && (
+                  <a
+                    href={deployment.monitorUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                  >
+                    {deployment.monitorUrl}
+                  </a>
                 )}
-              </span>
-            </div>
-            <div className="text-gray-300 flex ">
-              {" "}
-              <Image
-                src="timer.svg"
-                alt="dasboard-logo"
-                width={15}
-                height={15}
-                className="mr-1"
-              />
-              {deployment.duration}
-            </div>
-            {/* <div className="flex items-center gap-1 text-gray-300">
-            <Image 
-               src="worldwide.svg"
-               alt="dasboard-logo"
-               width={15}
-               height={15}
-               className="mr-1"
-             />
-              {deployment.location}
-            </div>
-            <div className="text-gray-500">{deployment.origin}</div> */}
-            <div className="flex items-center gap-1 text-gray-300">
-              {deployment.lid}
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
-            </div>
-            <div className="text-gray-300">{deployment.pricing}</div>
-            <div className="text-gray-300">{deployment.consumption}</div>
-          </div>
-        ))}
-      </div>
+              </td>
+              <td className="py-2 px-4">{deployment.load}%</td>
+              <td className="py-2 px-4">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    // TODO: Implement delete deployment
+                    toast({
+                      title: 'Not implemented',
+                      description: 'Delete deployment functionality coming soon',
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-};
-
-const deployments = [
-  {
-    id: "1",
-    asset: "RAM Storage",
-    status: "error",
-    duration: "2hr 37min",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$558",
-    pricing: "$00.32",
-    consumption: "$00.32",
-  },
-  {
-    id: "2",
-    asset: "RAM Storage",
-    status: "error",
-    duration: "2hr 37min",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$238",
-    pricing: "$05.00",
-    consumption: "$05.00",
-  },
-  {
-    id: "3",
-    asset: "RAM Storage",
-    status: "error",
-    duration: "1hr 21min",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$238",
-    pricing: "$00.88",
-    consumption: "$00.88",
-  },
-  {
-    id: "4",
-    asset: "RAM Storage",
-    status: "error",
-    duration: "1hr 21min",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$673",
-    pricing: "$12.00",
-    consumption: "$12.00",
-  },
-  {
-    id: "5",
-    asset: "RAM Storage",
-    status: "active",
-    duration: "2hrs ago",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$999",
-    pricing: "$01.42",
-    consumption: "$01.42",
-  },
-  {
-    id: "6",
-    asset: "RAM Storage",
-    status: "active",
-    duration: "2hrs ago",
-    location: "WORLDWIDE",
-    origin: "Provider",
-    lid: "$442",
-    pricing: "$00.67",
-    consumption: "$00.67",
-  },
-];
+}

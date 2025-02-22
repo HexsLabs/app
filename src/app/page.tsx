@@ -1,51 +1,36 @@
-import React from 'react';
-import { Header } from '@/components/Header';
-import { SearchBar } from '@/components/Search';
+'use client';
+
+import { useState } from 'react';
+import { DeploymentForm } from '@/components/DeploymentForm';
 import { DeploymentTable } from '@/components/DeploymentTable';
-import { Separator } from '@/components/ui/Separator';
+import { Toaster } from '@/components/ui/toaster';
 
-const DashboardPage = () => {
+export default function Home() {
+  const [showDeployForm, setShowDeployForm] = useState(false);
+
   return (
-    <div className="min-h-screen bg-[#101012] text-white">
-      <div className="flex">
-        {/* Sidebar with fixed width */}
-        {/* <div className="w-48 fixed">
-          <Sidebar />
-        </div> */}
-        
-        {/* Vertical Separator - Fixed position */}
-        {/* <div className="fixed left-48 h-screen">
-          <Separator orientation="vertical" className="h-full bg-zinc-700/50" />
-        </div> */}
+    <main className="min-h-screen bg-[#101012] text-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">Orchestrator</h1>
+          <p className="text-gray-400">Deploy and manage your applications with ease</p>
+        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 ">
-          <Header />
-          {/* Horizontal Separator */}
-          <Separator orientation="horizontal" className="w-full bg-zinc-700/50" />
-          
-          <div className="p-6">
-            {/* Dashboard Title and Search in single line */}
-            <div className="flex justify-between items-start mb-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-semibold">Your Deployments (75)</h1>
-                </div>
-                <p className="text-sm text-gray-400">
-                  Manage all your deployed applications in one place.
-                </p>
-              </div>
-              <div className="w-72 mt-4 ">
-                <SearchBar />
-              </div>
-            </div>
+        <div className="grid gap-8 md:grid-cols-2">
+          {/* Deployment Form */}
+          <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+            <h2 className="text-2xl font-semibold mb-6">Create Deployment</h2>
+            <DeploymentForm />
+          </div>
 
+          {/* Deployments List */}
+          <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+            <h2 className="text-2xl font-semibold mb-6">Active Deployments</h2>
             <DeploymentTable />
           </div>
         </div>
       </div>
-    </div>
+      <Toaster />
+    </main>
   );
-};
-
-export default DashboardPage;
+}
