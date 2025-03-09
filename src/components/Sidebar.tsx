@@ -8,40 +8,40 @@ export const Sidebar = () => {
     const router = useRouter();
     return (
         <div className="h-screen bg-[#101012] flex flex-col space-y-4 p-4">
-            <nav className="flex-1 flex flex-col justify-center gap-4">
+            <nav className="flex-1 flex flex-col justify-center gap-6">
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
                     onClick={() => router.push("/app/create")}
                 >
-                    <Plus />
+                    <Plus size={24} />
                     Create
                 </Button>
 
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
                     onClick={() => router.push("/app/dashboard")}
                 >
-                    <Grid />
+                    <Grid size={24} />
                     Dashboard
                 </Button>
 
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
                     onClick={() => router.push("/app/templates")}
                 >
-                    <FileText />
+                    <FileText size={24} />
                     Templates
                 </Button>
 
                 <Button
                     variant="ghost"
-                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
                     onClick={() => router.push("/app/chatbot")}
                 >
-                    <Sparkles />
+                    <Sparkles size={24} />
                     AI
                 </Button>
             </nav>

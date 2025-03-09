@@ -6,13 +6,13 @@ const templates = [
     name: 'Backend',
     description:
       'The backend is the server-side of an application that handles data processing, business logic, database interactions, and API communication to support frontend functionality.',
-    url: '/templates/backend',
+    url: '/app/templates/backend?from=/app/templates',
   },
   {
     name: 'Next.js',
     description:
       'Next.js is a React framework that enables server-side rendering, static site generation, and optimized performance for building fast, scalable web applications.',
-    url: '/templates/next-js',
+    url: '/app/templates/nextjs?from=/app/templates',
   },
 ];
 

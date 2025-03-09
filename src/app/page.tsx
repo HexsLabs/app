@@ -61,8 +61,8 @@ export default function LandingPage() {
               },
               {
                 icon: <Shield className="h-8 w-8" />,
-                title: "Enterprise Security",
-                description: "Bank-grade security with encrypted communications and automated backups"
+                title: "Crypto Support",
+                description: "Pay for deployments directly with crypto"
               },
               {
                 icon: <LineChart className="h-8 w-8" />,

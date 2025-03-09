@@ -78,9 +78,6 @@ const SDLBuilder: React.FC = () => {
     <div className="min-h-screen bg-background text-foreground p-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Create Deployment</h1>
-        <Button className="gradient-bg hover-effect">
-          Save
-        </Button>
       </div>
 
       <Tabs defaultValue="quick" className="w-full mb-8">
@@ -101,13 +98,6 @@ const SDLBuilder: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="advanced">
-          <div className="space-x-3 mb-6">
-            <Button variant="outline" className="hover-effect">Deploy</Button>
-            <Button variant="outline" className="hover-effect">Preview</Button>
-            <Button variant="outline" className="hover-effect">Import</Button>
-            <Button variant="outline" className="hover-effect">Reset</Button>
-          </div>
-
           <Card className="gradient-border card-shadow">
             <CardContent className="gradient-bg p-8 rounded-3xl">
               <div className="grid grid-cols-2 gap-12">
@@ -261,6 +251,11 @@ const SDLBuilder: React.FC = () => {
                     </Select>
                   </div>
                 </div>
+              </div>
+              <div className="mt-8 flex justify-end">
+                <Button className="gradient-bg text-foreground hover:opacity-90 px-8 py-6 text-lg font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl">
+                  Create Deployment
+                </Button>
               </div>
             </CardContent>
           </Card>
