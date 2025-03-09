@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createUser } from '@/lib/api';
+import { createUser } from '../../services/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

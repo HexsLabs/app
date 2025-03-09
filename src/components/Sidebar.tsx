@@ -1,86 +1,52 @@
 "use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { LayoutTemplate, Plus, Sparkles } from "lucide-react";
-
+import { FileText, Plus, Sparkles, Grid } from "lucide-react";
 
 export const Sidebar = () => {
-  const router = useRouter();
-  return (
-    <div className="h-screen bg-[#101012] flex flex-col">
-      <div className="p-4 mt-5">
-        <Link href="/">
-        <div className="flex space-x-2">
-        <Image src="Hexs1.svg" alt="dasboard-logo" width={40} height={40} />
-        <Image src="Hexs.svg" alt="dasboard-logo" width={100} height={100} />
+    const router = useRouter();
+    return (
+        <div className="h-screen bg-[#101012] flex flex-col space-y-4 p-4">
+            <nav className="flex-1 flex flex-col justify-center gap-4">
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    onClick={() => router.push("/app/create")}
+                >
+                    <Plus />
+                    Create
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    onClick={() => router.push("/app/dashboard")}
+                >
+                    <Grid />
+                    Dashboard
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    onClick={() => router.push("/app/templates")}
+                >
+                    <FileText />
+                    Templates
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
+                    onClick={() => router.push("/app/chatbot")}
+                >
+                    <Sparkles />
+                    AI
+                </Button>
+            </nav>
+
+            <div className="p-4">Github</div>
         </div>
-          
-        </Link>
-      </div>
-
-      <nav className="flex-1 flex flex-col justify-center space-y-4 p-4">
-
-
-      <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
-          onClick={() => router.push("/create")}
-        >
-          {/* <Image src="Vector.svg" alt="dasboard-logo" width={20} height={40} /> */}
-          <Plus />
-          Create
-        </Button>
-       
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
-            onClick={() => router.push("/")}
-          >
-            <Image
-              src="Vector3.svg"
-              alt="dasboard-logo"
-              width={20}
-              height={40}
-            />
-            Dashboard
-          </Button>
-        
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
-          onClick={() => router.push("/templates")}
-        >
-          {/* <Image src="Vector.svg" alt="dasboard-logo" width={20} height={40} /> */}
-          <LayoutTemplate />
-          Templates
-        </Button>
-
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 text-white hover:bg-black hover:text-white"
-          onClick={() => router.push("/chatbot")}
-        >
-          {/* <Image src="ai2.jpg" alt="dasboard-logo" width={20} height={40} /> */}
-          {/* <Image
-              src="/ai3.png"
-              alt="dasboard-logo"
-              width={20}
-              height={40}
-              className="text-white"
-            /> */}
-            <Sparkles />
-
-          AI
-        </Button>
-
-
-      </nav>
-
-      <div className="p-4">{/* Bottom section if needed */}</div>
-    </div>
-  );
+    );
 };
