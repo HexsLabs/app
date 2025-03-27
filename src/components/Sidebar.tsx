@@ -17,7 +17,14 @@ export const Sidebar = () => {
                     <Plus size={24} />
                     Create
                 </Button>
-
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
+                    onClick={() => router.push("/app/jupyter")}
+                >
+                    <Sparkles size={24} />
+                    Jupyter
+                </Button>
                 <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"

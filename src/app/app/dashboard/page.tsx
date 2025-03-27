@@ -142,6 +142,7 @@ export default function Dashboard() {
       <div className="gradient-border card-shadow">
         <div className="gradient-bg p-8 rounded-3xl">
           <h2 className="text-2xl font-semibold mb-8 text-foreground">Your Deployments</h2>
+          {/* NOTE THIS IS HARDCODED FOR NOW, WILL BE CHANGED TO THE ACTUAL USER ID */}
           <DeploymentTable userId={5} />
         </div>
       </div>
