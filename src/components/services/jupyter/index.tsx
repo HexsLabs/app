@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import JupyterDeployment from '@/components/JupyterDeployment';
+import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '@/lib/api';
 import { Deployment, ServiceType } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,46 +30,19 @@ export default function JupyterPage() {
       setIsLoading(false);
     }
   };
-  const isDeploymentActive = (createdAt: string, duration: string): boolean => {
-    const createdAtDate = new Date(createdAt);
-    let durationSeconds = 0;
-    
-    if (duration.endsWith('h')) {
-      durationSeconds = parseInt(duration) * 3600;
-    } else if (duration.endsWith('m')) {
-      durationSeconds = parseInt(duration) * 60;  
-    } else if (duration.endsWith('s')) {
-      durationSeconds = parseInt(duration);
-    } else {
-      durationSeconds = parseInt(duration) || 0;
-    }
-    const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
-    const now = new Date();
-    console.log('difference in minutes:', (endTime.getTime() - now.getTime()) / 1000 / 60);
-    console.log('start time:', createdAtDate);
-    console.log('duration:', durationSeconds);
-    console.log('now:', now);
-    console.log("--------------------------------")
-    return endTime.getTime() > now.getTime();
-  };
 
-  const getStatusColor = (url: string | null, createdAt: string, duration: string) => {
-    if (url && isDeploymentActive(createdAt, duration)) {
+  const getStatusColor = (url: string | null) => {
+    if (url) {
       return 'text-green-400';
-    }
-    if (!isDeploymentActive(createdAt, duration)) {
-      return 'text-red-400';
     }
     return 'text-yellow-400';
   };
 
-  // Calculate stats for active deployments only
-  const activeDeployments = Array.isArray(deployments) ? 
-    deployments.filter(d => d.appUrl !== null && isDeploymentActive(d.createdAt, d.duration)) : [];
-  const activeInstances = activeDeployments.length;
+  // Calculate stats
+  const activeInstances = Array.isArray(deployments) ? 
+    deployments.filter(d => d.appUrl !== null).length : 0;
   const totalDeployments = deployments.length;
-  const currentCpuUsage = activeDeployments.reduce((acc, curr) => acc + curr.cpu, 0);
-  const currentRamUsage = activeDeployments.reduce((acc, curr) => acc + parseInt(curr.memory), 0);
+  const resourceUsage = deployments.reduce((acc, curr) => acc + curr.cpu, 0);
 
   return (
     <div className="min-h-screen bg-zinc-900/50 py-8">
@@ -90,11 +63,8 @@ export default function JupyterPage() {
             <p className="mt-2 text-3xl font-semibold text-white">{totalDeployments}</p>
           </div>
           <div className="bg-zinc-800/50 rounded-lg p-6">
-            <h3 className="text-sm font-medium text-zinc-400">Current Resource Usage</h3>
-            <div className="mt-2">
-              <p className="text-xl font-semibold text-white">{currentCpuUsage} CPU</p>
-              <p className="text-xl font-semibold text-white">{currentRamUsage} GB RAM</p>
-            </div>
+            <h3 className="text-sm font-medium text-zinc-400">Resource Usage</h3>
+            <p className="mt-2 text-3xl font-semibold text-white">{resourceUsage} CPU</p>
           </div>
         </div>
 
@@ -125,8 +95,8 @@ export default function JupyterPage() {
                           <h4 className="text-white font-medium">
                             Instance {deployment.id}
                           </h4>
-                          <p className={`text-sm ${getStatusColor(deployment.appUrl, deployment.createdAt, deployment.duration)}`}>
-                            {isDeploymentActive(deployment.createdAt, deployment.duration) ? 'Running' : 'Closed'}
+                          <p className={`text-sm ${getStatusColor(deployment.appUrl)}`}>
+                            {deployment.appUrl ? 'Running' : 'Pending'}
                           </p>
                           <p className="text-sm text-zinc-400 mt-1">
                             Created {formatDistanceToNow(new Date(deployment.createdAt))} ago
@@ -167,6 +137,9 @@ export default function JupyterPage() {
                 >
                   Refresh Deployments
                 </button>
+                <button className="w-full px-4 py-2 bg-zinc-700 text-white rounded hover:bg-zinc-600 transition-colors">
+                  View Documentation
+                </button>
               </div>
             </div>
 
@@ -177,19 +150,19 @@ export default function JupyterPage() {
                 <div>
                   <div className="flex justify-between text-sm text-zinc-400 mb-1">
                     <span>CPU Usage</span>
-                    <span>{currentCpuUsage}/20 cores</span>
+                    <span>{resourceUsage}/4 cores</span>
                   </div>
                   <div className="h-2 bg-zinc-700 rounded">
                     <div
                       className="h-full bg-blue-600 rounded"
-                      style={{ width: `${Math.min((currentCpuUsage / 4) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((resourceUsage / 4) * 100, 100)}%` }}
                     ></div>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm text-zinc-400 mb-1">
                     <span>Active Instances</span>
-                    <span>{activeInstances}/20</span>
+                    <span>{activeInstances}/5</span>
                   </div>
                   <div className="h-2 bg-zinc-700 rounded">
                     <div

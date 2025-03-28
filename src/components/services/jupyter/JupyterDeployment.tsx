@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { api } from '../lib/api';
-import { DeployCustomJupyterRequest } from '../lib/types';
+import { api } from '../../../lib/api';
+import { DeployCustomJupyterRequest } from '../../../lib/types';
 
 interface JupyterDeploymentProps {
   onDeploymentComplete?: () => void;
