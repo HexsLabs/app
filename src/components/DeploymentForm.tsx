@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createDeployment, DeploymentConfig, EnvironmentVars } from '../../services/api';
+import { createDeployment, DeploymentConfig, EnvironmentVars } from '../lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

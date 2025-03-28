@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getDeploymentById, closeDeployment, Deployment } from '@/services/api';
+import { getDeploymentById, closeDeployment, Deployment } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { Copy, ExternalLink } from 'lucide-react';
@@ -98,7 +98,7 @@ export default function DeploymentDetailsPage() {
                 <Button 
                     variant="destructive" 
                     onClick={handleClose}
-                    disabled={closing || !deployment.lease_id}
+                    disabled={closing || !deployment.leaseId}
                 >
                     {closing ? 'Closing...' : 'Close Deployment'}
                 </Button>
@@ -112,11 +112,11 @@ export default function DeploymentDetailsPage() {
                                 Status
                             </span>
                             <span className="text-foreground font-semibold">
-                                {deployment.lease_id ? 'Active' : 'Inactive'}
+                                {deployment.leaseId ? 'Active' : 'Inactive'}
                             </span>
                         </div>
 
-                        {deployment.app_url && (
+                        {deployment.appUrl && (
                             <div className="bg-secondary/20 p-6 rounded-xl hover:bg-secondary/30 transition-colors">
                                 <div className="flex justify-between items-center">
                                     <div className="max-w-[calc(100%-50px)] overflow-hidden">
@@ -124,49 +124,20 @@ export default function DeploymentDetailsPage() {
                                             App URL
                                         </span>
                                         <a
-                                            href={deployment.app_url}
+                                            href={deployment.appUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2 truncate"
                                         >
-                                            <span className="truncate">{deployment.app_url}</span>
+                                            <span className="truncate">{deployment.appUrl}</span>
                                             <ExternalLink size={16} className="flex-shrink-0" />
                                         </a>
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => copyToClipboard(deployment.app_url!, 'App URL')}
+                                        onClick={() => copyToClipboard(deployment.appUrl!, 'App URL')}
                                         className="hover:bg-secondary/30 flex-shrink-0"
-                                    >
-                                        <Copy size={18} />
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-
-                        {deployment.monitor_url && (
-                            <div className="bg-secondary/20 p-6 rounded-xl hover:bg-secondary/30 transition-colors">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <span className="text-sm text-muted-foreground block mb-1">
-                                            Monitor URL
-                                        </span>
-                                        <a
-                                            href={deployment.monitor_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2"
-                                        >
-                                            {deployment.monitor_url}
-                                            <ExternalLink size={16} />
-                                        </a>
-                                    </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => copyToClipboard(deployment.monitor_url!, 'Monitor URL')}
-                                        className="hover:bg-secondary/30"
                                     >
                                         <Copy size={18} />
                                     </Button>
@@ -195,10 +166,10 @@ export default function DeploymentDetailsPage() {
                                     <span className="text-sm text-muted-foreground block">Duration</span>
                                     <span className="text-foreground">{deployment.duration}</span>
                                 </div>
-                                {deployment.lease_id && (
+                                {deployment.leaseId && (
                                     <div>
                                         <span className="text-sm text-muted-foreground block">Lease ID</span>
-                                        <span className="text-foreground">{deployment.lease_id}</span>
+                                        <span className="text-foreground">{deployment.leaseId}</span>
                                     </div>
                                 )}
                             </div>
@@ -210,7 +181,7 @@ export default function DeploymentDetailsPage() {
                                 <div>
                                     <span className="text-sm text-muted-foreground block">Created</span>
                                     <span className="text-foreground">
-                                        {new Date(deployment.created_at).toLocaleString()}
+                                        {new Date(deployment.createdAt).toLocaleString()}
                                     </span>
                                 </div>
                             </div>

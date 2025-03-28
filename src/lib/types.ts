@@ -20,7 +20,11 @@ export interface DeploymentConfig {
   appCpuUnits: number;
   appMemorySize: string;
   appStorageSize: string;
-  image: string;
+  image?: string | null;
+}
+
+export interface EnvironmentVars {
+  [key: string]: string;
 }
 
 export interface DeployBackendRequest {
@@ -47,6 +51,7 @@ export enum ServiceType {
 }
 
 export interface Deployment {
+  leaseId: number | null;
   id: string;
   appUrl: string | null;
   createdAt: string;

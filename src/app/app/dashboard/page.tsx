@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { useEffect, useState } from 'react';
-import { getUserDeployments } from '../../../../services/api';
+import { getDeployments } from '@/lib/api';
 import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
 
@@ -25,8 +25,11 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
   useEffect(() => {
     const fetchDeployments = async () => {
       try {
-        const response = await getUserDeployments(userId);
-        setDeployments(response.deployments || []);
+        const response = await getDeployments(userId);
+        setDeployments(response?.map(deployment => ({
+          ...deployment,
+          appUrl: deployment.appUrl || ''
+        })) || []);
       } catch (error) {
         toast({
           title: 'Error',
