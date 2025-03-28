@@ -78,7 +78,7 @@ export const createDeployment = async (
 ) => {
   try {
     console.log('Creating deployment with:', { userId, repoUrl, branchName, config, env });
-    const response = await api.post<DeploymentResponse>('/deployments/create', {
+    const response = await api.post<DeploymentResponse>('/api/deployments/create', {
       user: userId,
       repoUrl,
       branchName,
@@ -96,7 +96,7 @@ export const createDeployment = async (
 export const getUserDeployments = async (userId: number) => {
   try {
     console.log('Fetching deployments for user:', userId);
-    const response = await api.post<UserDeploymentsResponse>('/users/deployments', {
+    const response = await api.post<UserDeploymentsResponse>('/api/deployments/user', {
       user: userId,
     });
     console.log('User deployments:', response.data);
