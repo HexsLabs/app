@@ -46,7 +46,7 @@ function Providers({ children }: { children: React.ReactNode }) {
                     initialChain={baseSepolia}
                     appInfo={demoAppInfo}
                 >
-                    {mounted ? children : null}
+                    {mounted && children}
                 </RainbowKitProvider>
             </QueryClientProvider>
         </WagmiProvider>
