@@ -77,16 +77,18 @@ class ApiService {
   // Deployment Services
   async getUserDeployments(user: number, type?: ServiceType): Promise<Deployment[]> {
     return this.request<GetDeploymentsResponse>('/api/deployments/user', {
-      method: 'POST',
+      method: 'POST', 
       body: JSON.stringify({
         user,
         type: type || null,
       } as GetDeploymentsRequest),
-    }).then(response => response.deployments);
+    }).then(response => {
+      return response.deployments;
+    });
   }
 
   // Get deployment by ID
-  async getDeploymentById(deploymentId: string): Promise<Deployment> {
+  async getDeploymentById(deploymentId: number): Promise<Deployment> {
     return this.request<Deployment>(`/api/deployments/${deploymentId}`);
   }
 
@@ -99,7 +101,7 @@ class ApiService {
   }
 
   // Close a deployment
-  async closeDeployment(deploymentId: string): Promise<void> {
+  async closeDeployment(deploymentId: number): Promise<void> {
     return this.request<void>('/api/deployments/close', {
       method: 'POST',
       body: JSON.stringify({ deploymentId }),

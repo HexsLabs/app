@@ -33,9 +33,9 @@ export const api = apiService;
 
 // For backward compatibility with any code using the old function-based API
 export const getDeployments = (userId: number) => apiService.getUserDeployments(userId);
-export const getDeploymentById = (deploymentId: string) => apiService.getDeploymentById(deploymentId);
+export const getDeploymentById = (deploymentId: number) => apiService.getDeploymentById(deploymentId);
 export const getServiceInstances = (type: string) => apiService.getServiceInstances(type);
-export const closeDeployment = (deploymentId: string) => apiService.closeDeployment(deploymentId);
+export const closeDeployment = (deploymentId: number) => apiService.closeDeployment(deploymentId);
 export const getUserDeploymentsByType = (userId: number, type: string) => apiService.getUserDeploymentsByType(userId, type);
 export const createDeployment = (userId: number, repoUrl: string, branchName: string, config: DeploymentConfig, env: EnvironmentVars) => 
   apiService.createDeployment(userId, repoUrl, branchName, config, env); 

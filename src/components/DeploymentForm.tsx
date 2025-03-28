@@ -82,9 +82,9 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
               </p>
             )}
             {
-              response.leaseId && (
+              response.id && (
                 <p className="text-sm">
-                  🔑 Lease ID: {response.leaseId}
+                  🔑 Lease ID: {response.id}
                 </p>
               )
             }

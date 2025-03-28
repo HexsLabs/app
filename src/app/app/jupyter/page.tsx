@@ -32,9 +32,25 @@ export default function JupyterPage() {
   };
   const isDeploymentActive = (createdAt: string, duration: string): boolean => {
     const createdAtDate = new Date(createdAt);
-    const durationSeconds = parseInt(duration) || 0;
+    let durationSeconds = 0;
+    
+    if (duration.endsWith('h')) {
+      durationSeconds = parseInt(duration) * 3600;
+    } else if (duration.endsWith('m')) {
+      durationSeconds = parseInt(duration) * 60;  
+    } else if (duration.endsWith('s')) {
+      durationSeconds = parseInt(duration);
+    } else {
+      durationSeconds = parseInt(duration) || 0;
+    }
     const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
-    return endTime > new Date();
+    const now = new Date();
+    console.log('difference in minutes:', (endTime.getTime() - now.getTime()) / 1000 / 60);
+    console.log('start time:', createdAtDate);
+    console.log('duration:', durationSeconds);
+    console.log('now:', now);
+    console.log("--------------------------------")
+    return endTime.getTime() > now.getTime();
   };
 
   const getStatusColor = (url: string | null, createdAt: string, duration: string) => {

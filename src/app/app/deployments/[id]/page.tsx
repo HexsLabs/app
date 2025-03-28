@@ -20,7 +20,7 @@ export default function DeploymentDetailsPage() {
 
     const fetchDeployment = async () => {
         try {
-            const data = await getDeploymentById(params.id as string);
+            const data = await getDeploymentById(Number(params.id));
             setDeployment(data);
         } catch (error) {
             toast({
@@ -38,7 +38,7 @@ export default function DeploymentDetailsPage() {
         
         setClosing(true);
         try {
-            await closeDeployment(String(deployment.id));
+            await closeDeployment(Number(deployment.id));
             toast({
                 title: 'Success',
                 description: 'Deployment closed successfully',
@@ -98,7 +98,7 @@ export default function DeploymentDetailsPage() {
                 <Button 
                     variant="destructive" 
                     onClick={handleClose}
-                    disabled={closing || !deployment.leaseId}
+                    disabled={closing}
                 >
                     {closing ? 'Closing...' : 'Close Deployment'}
                 </Button>
@@ -112,7 +112,7 @@ export default function DeploymentDetailsPage() {
                                 Status
                             </span>
                             <span className="text-foreground font-semibold">
-                                {deployment.leaseId ? 'Active' : 'Inactive'}
+                                Active
                             </span>
                         </div>
 
@@ -166,12 +166,10 @@ export default function DeploymentDetailsPage() {
                                     <span className="text-sm text-muted-foreground block">Duration</span>
                                     <span className="text-foreground">{deployment.duration}</span>
                                 </div>
-                                {deployment.leaseId && (
-                                    <div>
-                                        <span className="text-sm text-muted-foreground block">Lease ID</span>
-                                        <span className="text-foreground">{deployment.leaseId}</span>
-                                    </div>
-                                )}
+                                <div>
+                                    <span className="text-sm text-muted-foreground block">Deployment ID</span>
+                                    <span className="text-foreground">{deployment.id}</span>
+                                </div>
                             </div>
                         </div>
 
