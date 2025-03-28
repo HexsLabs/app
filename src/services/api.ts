@@ -11,20 +11,23 @@ export interface EnvironmentVars {
 }
 
 export interface Deployment {
-  id: string;
-  userId: number;
-  repoUrl: string;
-  branchName: string;
-  config: DeploymentConfig;
-  env: EnvironmentVars;
-  status: string;
-  appUrl?: string;
-  monitorUrl?: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  created_at: string;
+  api_key: string | null;
+  user: number;
+  app_url: string | null;
+  monitor_url: string | null;
+  lease_id: string;
+  provider: string;
+  deployment_type: string;
+  cpu: number;
+  memory: string;
+  storage: string;
+  duration: string;
+  image: string | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080';
 
 // Get all deployments for a user
 export async function getDeployments(userId: number): Promise<Deployment[]> {

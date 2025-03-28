@@ -38,7 +38,7 @@ export default function DeploymentDetailsPage() {
         
         setClosing(true);
         try {
-            await closeDeployment(deployment.id);
+            await closeDeployment(String(deployment.id));
             toast({
                 title: 'Success',
                 description: 'Deployment closed successfully',
@@ -98,7 +98,7 @@ export default function DeploymentDetailsPage() {
                 <Button 
                     variant="destructive" 
                     onClick={handleClose}
-                    disabled={closing || deployment.status === 'closed'}
+                    disabled={closing || !deployment.lease_id}
                 >
                     {closing ? 'Closing...' : 'Close Deployment'}
                 </Button>
@@ -112,60 +112,32 @@ export default function DeploymentDetailsPage() {
                                 Status
                             </span>
                             <span className="text-foreground font-semibold">
-                                {deployment.status.charAt(0).toUpperCase() + deployment.status.slice(1)}
+                                {deployment.lease_id ? 'Active' : 'Inactive'}
                             </span>
                         </div>
 
-                        <div className="bg-secondary/20 p-6 rounded-xl hover:bg-secondary/30 transition-colors">
-                            <span className="text-sm text-muted-foreground block mb-1">
-                                Repository
-                            </span>
-                            <div className="flex justify-between items-center">
-                                <a
-                                    href={deployment.repoUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2"
-                                >
-                                    {deployment.repoUrl}
-                                    <ExternalLink size={16} />
-                                </a>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => copyToClipboard(deployment.repoUrl, 'Repository URL')}
-                                    className="hover:bg-secondary/30"
-                                >
-                                    <Copy size={18} />
-                                </Button>
-                            </div>
-                            <span className="text-sm text-muted-foreground block mt-2">
-                                Branch: {deployment.branchName}
-                            </span>
-                        </div>
-
-                        {deployment.appUrl && (
+                        {deployment.app_url && (
                             <div className="bg-secondary/20 p-6 rounded-xl hover:bg-secondary/30 transition-colors">
                                 <div className="flex justify-between items-center">
-                                    <div>
+                                    <div className="max-w-[calc(100%-50px)] overflow-hidden">
                                         <span className="text-sm text-muted-foreground block mb-1">
                                             App URL
                                         </span>
                                         <a
-                                            href={deployment.appUrl}
+                                            href={deployment.app_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2"
+                                            className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2 truncate"
                                         >
-                                            {deployment.appUrl}
-                                            <ExternalLink size={16} />
+                                            <span className="truncate">{deployment.app_url}</span>
+                                            <ExternalLink size={16} className="flex-shrink-0" />
                                         </a>
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => copyToClipboard(deployment.appUrl!, 'App URL')}
-                                        className="hover:bg-secondary/30"
+                                        onClick={() => copyToClipboard(deployment.app_url!, 'App URL')}
+                                        className="hover:bg-secondary/30 flex-shrink-0"
                                     >
                                         <Copy size={18} />
                                     </Button>
@@ -173,7 +145,7 @@ export default function DeploymentDetailsPage() {
                             </div>
                         )}
 
-                        {deployment.monitorUrl && (
+                        {deployment.monitor_url && (
                             <div className="bg-secondary/20 p-6 rounded-xl hover:bg-secondary/30 transition-colors">
                                 <div className="flex justify-between items-center">
                                     <div>
@@ -181,19 +153,19 @@ export default function DeploymentDetailsPage() {
                                             Monitor URL
                                         </span>
                                         <a
-                                            href={deployment.monitorUrl}
+                                            href={deployment.monitor_url}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-foreground font-mono hover:text-primary transition-colors inline-flex items-center gap-2"
                                         >
-                                            {deployment.monitorUrl}
+                                            {deployment.monitor_url}
                                             <ExternalLink size={16} />
                                         </a>
                                     </div>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => copyToClipboard(deployment.monitorUrl!, 'Monitor URL')}
+                                        onClick={() => copyToClipboard(deployment.monitor_url!, 'Monitor URL')}
                                         className="hover:bg-secondary/30"
                                     >
                                         <Copy size={18} />
@@ -208,42 +180,28 @@ export default function DeploymentDetailsPage() {
                             <h2 className="text-lg font-semibold mb-4">Configuration</h2>
                             <div className="space-y-3">
                                 <div>
-                                    <span className="text-sm text-muted-foreground block">Port</span>
-                                    <span className="text-foreground">{deployment.config.appPort}</span>
-                                </div>
-                                <div>
-                                    <span className="text-sm text-muted-foreground block">Duration</span>
-                                    <span className="text-foreground">{deployment.config.deploymentDuration}</span>
-                                </div>
-                                <div>
-                                    <span className="text-sm text-muted-foreground block">CPU Units</span>
-                                    <span className="text-foreground">{deployment.config.appCpuUnits}</span>
+                                    <span className="text-sm text-muted-foreground block">CPU</span>
+                                    <span className="text-foreground">{deployment.cpu} units</span>
                                 </div>
                                 <div>
                                     <span className="text-sm text-muted-foreground block">Memory</span>
-                                    <span className="text-foreground">{deployment.config.appMemorySize}</span>
+                                    <span className="text-foreground">{deployment.memory}</span>
                                 </div>
                                 <div>
                                     <span className="text-sm text-muted-foreground block">Storage</span>
-                                    <span className="text-foreground">{deployment.config.appStorageSize}</span>
+                                    <span className="text-foreground">{deployment.storage}</span>
                                 </div>
+                                <div>
+                                    <span className="text-sm text-muted-foreground block">Duration</span>
+                                    <span className="text-foreground">{deployment.duration}</span>
+                                </div>
+                                {deployment.lease_id && (
+                                    <div>
+                                        <span className="text-sm text-muted-foreground block">Lease ID</span>
+                                        <span className="text-foreground">{deployment.lease_id}</span>
+                                    </div>
+                                )}
                             </div>
-                        </div>
-
-                        <div className="bg-secondary/20 p-6 rounded-xl">
-                            <h2 className="text-lg font-semibold mb-4">Environment Variables</h2>
-                            {Object.keys(deployment.env).length > 0 ? (
-                                <div className="space-y-2">
-                                    {Object.entries(deployment.env).map(([key, value]) => (
-                                        <div key={key} className="flex justify-between items-center">
-                                            <span className="text-sm text-muted-foreground">{key}</span>
-                                            <span className="text-foreground font-mono">{value}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <span className="text-sm text-muted-foreground">No environment variables set</span>
-                            )}
                         </div>
 
                         <div className="bg-secondary/20 p-6 rounded-xl">
@@ -252,13 +210,7 @@ export default function DeploymentDetailsPage() {
                                 <div>
                                     <span className="text-sm text-muted-foreground block">Created</span>
                                     <span className="text-foreground">
-                                        {new Date(deployment.createdAt).toLocaleString()}
-                                    </span>
-                                </div>
-                                <div>
-                                    <span className="text-sm text-muted-foreground block">Last Updated</span>
-                                    <span className="text-foreground">
-                                        {new Date(deployment.updatedAt).toLocaleString()}
+                                        {new Date(deployment.created_at).toLocaleString()}
                                     </span>
                                 </div>
                             </div>
