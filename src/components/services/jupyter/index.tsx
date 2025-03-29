@@ -104,8 +104,9 @@ export default function JupyterPage() {
                         </div>
                         {deployment.appUrl && (
                           <a
-                            href={deployment.appUrl}
+                            href={`${deployment.appUrl}?token=password`}
                             target="_blank"
+                            onClick={() => console.log(`Redirecting to ${deployment.appUrl}?token=password`)}
                             rel="noopener noreferrer"
                             className="text-blue-400 hover:text-blue-300 text-sm"
                           >

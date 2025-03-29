@@ -128,8 +128,9 @@ export default function JupyterPage() {
                           </p>
                         </div>
                         {deployment.appUrl && (
+                          // TODO add unique token logic here, instead of hardcoding the password
                           <a
-                            href={deployment.appUrl}
+                            href={`${deployment.appUrl}?token=password`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-400 hover:text-blue-300 text-sm"
