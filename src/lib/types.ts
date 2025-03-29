@@ -53,7 +53,7 @@ export enum ServiceType {
 }
 
 export interface Deployment {
-  id: string;
+  deploymentId: string;
   appUrl: string | null;
   createdAt: string;
   provider: string;
