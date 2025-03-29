@@ -15,6 +15,12 @@ import {
 console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080';
 
+// User response interface
+interface UserResponse {
+  message: string;
+  user: number;
+}
+
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -31,6 +37,14 @@ class ApiService {
     }
 
     return response.json();
+  }
+
+  // User Management
+  async createUser(address: string): Promise<UserResponse> {
+    return this.request<UserResponse>('/api/user/register', {
+      method: 'POST',
+      body: JSON.stringify({ address }),
+    });
   }
 
   // Jupyter Services
