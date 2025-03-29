@@ -45,11 +45,6 @@ export default function JupyterPage() {
     }
     const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
     const now = new Date();
-    console.log('difference in minutes:', (endTime.getTime() - now.getTime()) / 1000 / 60);
-    console.log('start time:', createdAtDate);
-    console.log('duration:', durationSeconds);
-    console.log('now:', now);
-    console.log("--------------------------------")
     return endTime.getTime() > now.getTime();
   };
 
