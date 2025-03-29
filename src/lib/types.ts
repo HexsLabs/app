@@ -53,8 +53,6 @@ export enum ServiceType {
 }
 
 export interface Deployment {
-  /** @deprecated Use id instead */
-  leaseId?: number | null;
   id: string;
   appUrl: string | null;
   createdAt: string;
