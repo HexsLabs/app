@@ -58,7 +58,6 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify({
         ...data,
-        // provider: process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto'
       }),
     });
   }
