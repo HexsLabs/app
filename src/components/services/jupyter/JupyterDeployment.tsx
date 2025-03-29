@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { api } from '../../../lib/api';
-import { DeployCustomJupyterRequest } from '../../../lib/types';
+import { DeployCustomJupyterRequest, ProviderType } from '../../../lib/types';
 
 interface JupyterDeploymentProps {
   onDeploymentComplete?: () => void;
@@ -10,6 +10,9 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState<ProviderType>(
+    (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'AUTO'
+  );
 
   const handleDefaultDeploy = async () => {
     try {
@@ -17,7 +20,10 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       setError(null);
       setSuccess(null);
       
-      const response = await api.deployDefaultJupyter({ userId: 5 }); // TODO: REPLACE THIS WITH THE ACTUAL USER ID
+      const response = await api.deployDefaultJupyter({ 
+        userId: 5, // TODO: REPLACE THIS WITH THE ACTUAL USER ID
+        provider: selectedProvider
+      });
       setSuccess(response.status);
       onDeploymentComplete?.();
     } catch (err) {
@@ -39,6 +45,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       storageSize: formData.get('storageSize') as string,
       duration: formData.get('duration') as string,
       image: formData.get('image') as string || undefined,
+      provider: selectedProvider
     };
 
     try {
@@ -61,21 +68,46 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       <div>
         <h2 className="text-2xl font-bold text-white mb-4">Deploy Instance</h2>
         
+        {/* Provider Selection */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-zinc-300 mb-1">Provider</label>
+          <select
+            value={selectedProvider}
+            onChange={(e) => setSelectedProvider(e.target.value as ProviderType)}
+            className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="AUTO">Auto (Default)</option>
+            {process.env.NEXT_PUBLIC_PROVIDER_TO_USE && (
+              <option value={process.env.NEXT_PUBLIC_PROVIDER_TO_USE}>
+                {process.env.NEXT_PUBLIC_PROVIDER_TO_USE}
+              </option>
+            )}
+          </select>
+        </div>
         {/* Default Deployment */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-zinc-200 mb-2">Quick Deploy</h3>
+        <div className="mb-12 p-6 border border-zinc-700 rounded-lg">
+          <h3 className="text-xl font-semibold text-zinc-200 mb-3">Quick Deploy</h3>
+          <div className="mb-6 space-y-2">
+            <p className="text-sm text-zinc-400">Pre-configured instance with:</p>
+            <ul className="text-sm text-zinc-400 list-disc list-inside">
+              <li>CPU: 1 units</li>
+              <li>Memory: 1Gi</li>
+              <li>Storage: 5Gi</li>
+            </ul>
+          </div>
           <button
             onClick={handleDefaultDeploy}
             disabled={isLoading}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {isLoading ? 'Deploying...' : 'Deploy Default Instance'}
           </button>
         </div>
 
         {/* Custom Deployment Form */}
-        <div>
-          <h3 className="text-lg font-semibold text-zinc-200 mb-2">Custom Deploy</h3>
+        <div className="p-6 border border-zinc-700 rounded-lg">
+          <h3 className="text-xl font-semibold text-zinc-200 mb-4">Custom Deploy</h3>
+          <p className="text-sm text-zinc-400 mb-6">Configure your own instance specifications</p>
           <form onSubmit={handleCustomDeploy} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-zinc-300 mb-1">CPU Units</label>
@@ -84,6 +116,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
                 name="cpuUnits"
                 required
                 min="1"
+                placeholder="Enter CPU units"
                 className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
