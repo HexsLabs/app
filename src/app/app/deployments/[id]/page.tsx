@@ -38,7 +38,7 @@ export default function DeploymentDetailsPage() {
         
         setClosing(true);
         try {
-            await closeDeployment(Number(deployment.id));
+            await closeDeployment(Number(deployment.deploymentId));
             toast({
                 title: 'Success',
                 description: 'Deployment closed successfully',
@@ -168,7 +168,7 @@ export default function DeploymentDetailsPage() {
                                 </div>
                                 <div>
                                     <span className="text-sm text-muted-foreground block">Deployment ID</span>
-                                    <span className="text-foreground">{deployment.id}</span>
+                                    <span className="text-foreground">{deployment.deploymentId}</span>
                                 </div>
                             </div>
                         </div>

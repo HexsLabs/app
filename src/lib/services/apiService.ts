@@ -9,8 +9,10 @@ import {
   ServiceType,
   EnvironmentVars,
   DeploymentConfig,
+  ProviderType,
 } from '../types';
 
+console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080';
 
 class ApiService {
@@ -35,14 +37,20 @@ class ApiService {
   async deployDefaultJupyter(data: DeployDefaultJupyterRequest): Promise<DeploymentResponse> {
     return this.request<DeploymentResponse>('/api/services/jupyter/deploy-default', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        provider: process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto'
+      }),
     });
   }
 
   async deployCustomJupyter(data: DeployCustomJupyterRequest): Promise<DeploymentResponse> {
     return this.request<DeploymentResponse>('/api/services/jupyter/deploy-custom', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        provider: process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto'
+      }),
     });
   }
 
@@ -50,7 +58,10 @@ class ApiService {
   async deployBackend(data: DeployBackendRequest): Promise<DeploymentResponse> {
     return this.request<DeploymentResponse>('/api/services/backend/deploy', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        provider: process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto'
+      }),
     });
   }
 
@@ -70,6 +81,7 @@ class ApiService {
         branchName,
         config,
         env,
+        provider: process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto',
       }),
     });
   }

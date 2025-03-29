@@ -1,6 +1,7 @@
 // Jupyter Service Types
 export interface DeployDefaultJupyterRequest {
   userId: number;
+  provider?: ProviderType;
 }
 
 export interface DeployCustomJupyterRequest {
@@ -10,6 +11,7 @@ export interface DeployCustomJupyterRequest {
   storageSize: string;
   duration: string;
   image?: string;
+  provider?: ProviderType;
 }
 
 // Backend Service Types
@@ -33,7 +35,7 @@ export interface DeployBackendRequest {
   branchName?: string;
   env?: Record<string, string>;
   config: DeploymentConfig;
-  provider?: 'AUTO' | 'AKASH' | 'SPHERON';
+  provider?: ProviderType;
 }
 
 export interface DeploymentResponse {
@@ -51,9 +53,7 @@ export enum ServiceType {
 }
 
 export interface Deployment {
-  /** @deprecated Use id instead */
-  leaseId?: number | null;
-  id: string;
+  deploymentId: string;
   appUrl: string | null;
   createdAt: string;
   provider: string;
