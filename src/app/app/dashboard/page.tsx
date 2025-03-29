@@ -8,7 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import Link from 'next/link';
 
 interface Deployment {
-  id: string;
+  deploymentId: string;
   appUrl: string;
   createdAt?: string;
 }
@@ -73,14 +73,14 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
     <div className="space-y-4">
       {deployments.map((deployment) => (
         <div 
-          key={deployment.id} 
+          key={deployment.deploymentId} 
           className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div className="space-y-2 flex-grow">
             <div className="flex items-center gap-2">
               <span className="text-gray-400">ID:</span>
-              <Link href={`/app/deployments/${deployment.id}`} className="text-foreground hover:text-foreground/80 hover:underline font-medium">
-                {deployment.id}
+              <Link href={`/app/deployments/${deployment.deploymentId}`} className="text-foreground hover:text-foreground/80 hover:underline font-medium">
+                {deployment.deploymentId}
               </Link>
             </div>
             <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
             </div>
           </div>
           <div className="flex gap-2 self-end md:self-center">
-            <Link href={`/app/deployments/${deployment.id}`} passHref>
+            <Link href={`/app/deployments/${deployment.deploymentId}`} passHref>
               <Button size="sm" variant="outline" className="hover-effect">
                 View
               </Button>
