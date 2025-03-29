@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import JupyterDeployment from '@/components/JupyterDeployment';
+import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '@/lib/api';
 import { Deployment, ServiceType } from '@/lib/types';
 import { formatDistanceToNow } from 'date-fns';
