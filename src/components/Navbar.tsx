@@ -19,7 +19,7 @@ export default function Navbar() {
       <div className="flex justify-between h-20 items-center px-4 max-w-[129rem] mx-auto">
         <div className="flex-shrink-0 pl-4">
           <Link href="/" className="text-2xl font-bold text-foreground">
-            Hexs
+            Aquanode
           </Link>
         </div>
         <div className="flex items-center space-x-4">
