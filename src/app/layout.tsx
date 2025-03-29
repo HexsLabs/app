@@ -28,7 +28,7 @@ const wagmiConfig = createConfig({
 const queryClient = new QueryClient();
 
 const demoAppInfo = {
-    appName: "Hexs",
+    appName: "Aquanode",
 };
 
 function Providers({ children }: { children: React.ReactNode }) {

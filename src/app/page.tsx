@@ -35,7 +35,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <div className="mt-12 text-sm text-muted-foreground">
-            Start building your next great project with Hexs
+            Start building your next great project with Aquanode
           </div>
         </div>
       </section>
@@ -44,7 +44,7 @@ export default function LandingPage() {
       <section id="features" className="py-20 bg-zinc-900/50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Hexs</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Choose Aquanode</h2>
             <p className="text-muted-foreground">Everything you need for modern application deployment</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
@@ -87,7 +87,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center px-4">
           <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join the next generation of cloud deployment with Hexs
+            Join the next generation of cloud deployment with Aquanode
           </p>
           <Link href="/app/dashboard">
             <Button className="bg-gradient-to-r from-zinc-50 to-white text-black hover:from-white hover:to-zinc-50 px-8 py-6 text-lg">
@@ -113,7 +113,7 @@ export default function LandingPage() {
               <h3 className="font-bold mb-4">Support</h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li><Link href="/contact">Contact</Link></li>
-                <li><Link href="https://github.com/your-org/hexs" target="_blank" rel="noopener noreferrer">GitHub</Link></li>
+                <li><Link href="https://github.com/your-org/aquanode" target="_blank" rel="noopener noreferrer">GitHub</Link></li>
               </ul>
             </div>
             <div>
@@ -125,7 +125,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-zinc-800 text-center text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Hexs. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Aquanode. All rights reserved.</p>
           </div>
         </div>
       </footer>
