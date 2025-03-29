@@ -30,19 +30,41 @@ export default function JupyterPage() {
       setIsLoading(false);
     }
   };
+  const isDeploymentActive = (createdAt: string, duration: string): boolean => {
+    const createdAtDate = new Date(createdAt);
+    let durationSeconds = 0;
+    
+    if (duration.endsWith('h')) {
+      durationSeconds = parseInt(duration) * 3600;
+    } else if (duration.endsWith('m')) {
+      durationSeconds = parseInt(duration) * 60;  
+    } else if (duration.endsWith('s')) {
+      durationSeconds = parseInt(duration);
+    } else {
+      durationSeconds = parseInt(duration) || 0;
+    }
+    const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
+    const now = new Date();
+    return endTime.getTime() > now.getTime();
+  };
 
-  const getStatusColor = (url: string | null) => {
-    if (url) {
+  const getStatusColor = (url: string | null, createdAt: string, duration: string) => {
+    if (url && isDeploymentActive(createdAt, duration)) {
       return 'text-green-400';
+    }
+    if (!isDeploymentActive(createdAt, duration)) {
+      return 'text-red-400';
     }
     return 'text-yellow-400';
   };
 
-  // Calculate stats
-  const activeInstances = Array.isArray(deployments) ? 
-    deployments.filter(d => d.appUrl !== null).length : 0;
+  // Calculate stats for active deployments only
+  const activeDeployments = Array.isArray(deployments) ? 
+    deployments.filter(d => d.appUrl !== null && isDeploymentActive(d.createdAt, d.duration)) : [];
+  const activeInstances = activeDeployments.length;
   const totalDeployments = deployments.length;
-  const resourceUsage = deployments.reduce((acc, curr) => acc + curr.cpu, 0);
+  const currentCpuUsage = activeDeployments.reduce((acc, curr) => acc + curr.cpu, 0);
+  const currentRamUsage = activeDeployments.reduce((acc, curr) => acc + parseInt(curr.memory), 0);
 
   return (
     <div className="min-h-screen bg-zinc-900/50 py-8">
@@ -63,8 +85,11 @@ export default function JupyterPage() {
             <p className="mt-2 text-3xl font-semibold text-white">{totalDeployments}</p>
           </div>
           <div className="bg-zinc-800/50 rounded-lg p-6">
-            <h3 className="text-sm font-medium text-zinc-400">Resource Usage</h3>
-            <p className="mt-2 text-3xl font-semibold text-white">{resourceUsage} CPU</p>
+            <h3 className="text-sm font-medium text-zinc-400">Current Resource Usage</h3>
+            <div className="mt-2">
+              <p className="text-xl font-semibold text-white">{currentCpuUsage} CPU</p>
+              <p className="text-xl font-semibold text-white">{currentRamUsage} GB RAM</p>
+            </div>
           </div>
         </div>
 
@@ -87,16 +112,16 @@ export default function JupyterPage() {
                 <div className="space-y-4">
                   {deployments.map((deployment) => (
                     <div
-                      key={deployment.id}
+                      key={deployment.deploymentId}
                       className="bg-zinc-900/50 rounded-lg p-4 border border-zinc-700"
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="text-white font-medium">
-                            Instance {deployment.id}
+                            Instance {deployment.deploymentId}
                           </h4>
-                          <p className={`text-sm ${getStatusColor(deployment.appUrl)}`}>
-                            {deployment.appUrl ? 'Running' : 'Pending'}
+                          <p className={`text-sm ${getStatusColor(deployment.appUrl, deployment.createdAt, deployment.duration)}`}>
+                            {isDeploymentActive(deployment.createdAt, deployment.duration) ? 'Running' : 'Closed'}
                           </p>
                           <p className="text-sm text-zinc-400 mt-1">
                             Created {formatDistanceToNow(new Date(deployment.createdAt))} ago
@@ -137,9 +162,6 @@ export default function JupyterPage() {
                 >
                   Refresh Deployments
                 </button>
-                <button className="w-full px-4 py-2 bg-zinc-700 text-white rounded hover:bg-zinc-600 transition-colors">
-                  View Documentation
-                </button>
               </div>
             </div>
 
@@ -150,19 +172,19 @@ export default function JupyterPage() {
                 <div>
                   <div className="flex justify-between text-sm text-zinc-400 mb-1">
                     <span>CPU Usage</span>
-                    <span>{resourceUsage}/4 cores</span>
+                    <span>{currentCpuUsage}/20 cores</span>
                   </div>
                   <div className="h-2 bg-zinc-700 rounded">
                     <div
                       className="h-full bg-blue-600 rounded"
-                      style={{ width: `${Math.min((resourceUsage / 4) * 100, 100)}%` }}
+                      style={{ width: `${Math.min((currentCpuUsage / 4) * 100, 100)}%` }}
                     ></div>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm text-zinc-400 mb-1">
                     <span>Active Instances</span>
-                    <span>{activeInstances}/5</span>
+                    <span>{activeInstances}/20</span>
                   </div>
                   <div className="h-2 bg-zinc-700 rounded">
                     <div
@@ -179,9 +201,9 @@ export default function JupyterPage() {
               <h3 className="text-lg font-medium text-white mb-4">Recent Activity</h3>
               <div className="space-y-4">
                 {deployments.slice(0, 3).map((deployment) => (
-                  <div key={deployment.id} className="text-sm">
+                  <div key={deployment.deploymentId} className="text-sm">
                     <p className="text-zinc-300">
-                      Instance {deployment.id} {deployment.appUrl ? 'running' : 'pending'}
+                      Instance {deployment.deploymentId} {deployment.appUrl ? 'running' : 'pending'}
                     </p>
                     <p className="text-zinc-500">
                       {formatDistanceToNow(new Date(deployment.createdAt))} ago

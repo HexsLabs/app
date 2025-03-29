@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createDeployment, DeploymentConfig, EnvironmentVars } from '../../services/api';
+import { createDeployment, DeploymentConfig, EnvironmentVars } from '../lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -72,8 +72,26 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
       );
       
       toast({
-        title: 'Success!',
-        description: `Deployment created. App URL: ${response.appUrl}`,
+        title: '🎉 Deployment Successful!',
+        description: (
+          <div className="mt-2 space-y-2">
+            <p className="font-medium">Your deployment has been created successfully!</p>
+            {response.appUrl && (
+              <p className="text-sm">
+                🌐 App URL: <a href={response.appUrl} target="_blank" rel="noopener noreferrer" className="underline">{response.appUrl}</a>
+              </p>
+            )}
+            {
+              response.deploymentId && (
+                <p className="text-sm">
+                  🔑 Lease ID: {response.deploymentId}
+                </p>
+              )
+            }
+          </div>
+        ),
+        className: "bg-green-500/90 text-white border-green-600",
+        duration: 5000,
       });
 
       // Reset form

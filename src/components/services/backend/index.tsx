@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Info } from 'lucide-react';
 import { DeploymentForm } from '@/components/DeploymentForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toaster } from "@/components/ui/toaster";
 
 interface SliderProps {
   value: number;
@@ -261,6 +262,7 @@ const SDLBuilder: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      <Toaster />
     </div>
   );
 };

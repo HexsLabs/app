@@ -87,13 +87,13 @@ export default function JupyterPage() {
                 <div className="space-y-4">
                   {deployments.map((deployment) => (
                     <div
-                      key={deployment.id}
+                      key={deployment.deploymentId}
                       className="bg-zinc-900/50 rounded-lg p-4 border border-zinc-700"
                     >
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="text-white font-medium">
-                            Instance {deployment.id}
+                            Instance {deployment.deploymentId}
                           </h4>
                           <p className={`text-sm ${getStatusColor(deployment.appUrl)}`}>
                             {deployment.appUrl ? 'Running' : 'Pending'}
@@ -179,9 +179,9 @@ export default function JupyterPage() {
               <h3 className="text-lg font-medium text-white mb-4">Recent Activity</h3>
               <div className="space-y-4">
                 {deployments.slice(0, 3).map((deployment) => (
-                  <div key={deployment.id} className="text-sm">
+                  <div key={deployment.deploymentId} className="text-sm">
                     <p className="text-zinc-300">
-                      Instance {deployment.id} {deployment.appUrl ? 'running' : 'pending'}
+                      Instance {deployment.deploymentId} {deployment.appUrl ? 'running' : 'pending'}
                     </p>
                     <p className="text-zinc-500">
                       {formatDistanceToNow(new Date(deployment.createdAt))} ago

@@ -1,68 +1,41 @@
+import { apiService } from './services/apiService';
 import {
+  DeploymentConfig,
+  EnvironmentVars,
+  Deployment,
+  ServiceType,
   DeployBackendRequest,
   DeployCustomJupyterRequest,
   DeployDefaultJupyterRequest,
   DeploymentResponse,
   GetDeploymentsRequest,
   GetDeploymentsResponse,
-  Deployment,
-  ServiceType,
+  ProviderType,
 } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080';
+// Re-export types
+export type {
+  DeploymentConfig,
+  EnvironmentVars,
+  Deployment,
+  ServiceType,
+  DeployBackendRequest,
+  DeployCustomJupyterRequest,
+  DeployDefaultJupyterRequest,
+  DeploymentResponse,
+  GetDeploymentsRequest,
+  GetDeploymentsResponse,
+  ProviderType,
+};
 
-class ApiService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-    });
+// Export the main API service
+export const api = apiService;
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'An error occurred');
-    }
-
-    return response.json();
-  }
-
-  // Jupyter Services
-  async deployDefaultJupyter(data: DeployDefaultJupyterRequest): Promise<DeploymentResponse> {
-    return this.request<DeploymentResponse>('/api/services/jupyter/deploy-default', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async deployCustomJupyter(data: DeployCustomJupyterRequest): Promise<DeploymentResponse> {
-    return this.request<DeploymentResponse>('/api/services/jupyter/deploy-custom', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  // Backend Services
-  async deployBackend(data: DeployBackendRequest): Promise<DeploymentResponse> {
-    return this.request<DeploymentResponse>('/api/services/backend/deploy', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  // Deployment Services
-  async getUserDeployments(userId: number, type?: ServiceType): Promise<Deployment[]> {
-    const response = await this.request<GetDeploymentsResponse>('/api/deployments/user', {
-      method: 'POST',
-      body: JSON.stringify({
-        user: userId,
-        type: type || null,
-      } as GetDeploymentsRequest),
-    });
-    return response.deployments;
-  }
-}
-
-export const api = new ApiService(); 
+// For backward compatibility with any code using the old function-based API
+export const getDeployments = (userId: number) => apiService.getUserDeployments(userId);
+export const getDeploymentById = (deploymentId: number) => apiService.getDeploymentById(deploymentId);
+export const getServiceInstances = (type: string) => apiService.getServiceInstances(type);
+export const closeDeployment = (deploymentId: number) => apiService.closeDeployment(deploymentId);
+export const getUserDeploymentsByType = (userId: number, type: string) => apiService.getUserDeploymentsByType(userId, type);
+export const createDeployment = (userId: number, repoUrl: string, branchName: string, config: DeploymentConfig, env: EnvironmentVars) => 
+  apiService.createDeployment(userId, repoUrl, branchName, config, env); 
