@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { apiService } from '../../../lib/services/apiService';
-import { DeployBackendRequest, DeploymentConfig, ProviderType } from '../../../lib/types';
+import { apiService } from '../../../services/apiService';
+import { DeployBackendRequest, DeploymentConfig, ProviderType } from '../../../services/types';
 
 export default function BackendDeployment() {
   const [isLoading, setIsLoading] = useState(false);

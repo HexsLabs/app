@@ -7,8 +7,6 @@ import DesktopOnly from "@/components/DesktopOnly";
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
 import { WagmiProvider } from "wagmi";
-import { http, createConfig } from "wagmi";
-import { injected } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, darkTheme, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -24,7 +22,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const wagmiConfig = getDefaultConfig({
     appName: 'Aquanode',
-    projectId: 'YOUR_PROJECT_ID', // You'll need to replace this with a WalletConnect project ID
+    projectId: 'YOUR_PROJECT_ID',
     chains: [baseSepolia],
     wallets: [
         {

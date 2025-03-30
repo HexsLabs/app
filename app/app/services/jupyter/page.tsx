@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
-import { Deployment, ServiceType } from '../../../../lib/types';
+import { Deployment, ServiceType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function JupyterPage() {

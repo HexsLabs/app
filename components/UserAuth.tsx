@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { apiService } from '../lib/services/apiService';
+import { apiService } from '../services/apiService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

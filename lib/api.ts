@@ -1,4 +1,4 @@
-import { apiService } from './services/apiService';
+import { apiService } from '../services/apiService';
 import {
   DeploymentConfig,
   EnvironmentVars,
@@ -11,7 +11,7 @@ import {
   GetDeploymentsRequest,
   GetDeploymentsResponse,
   ProviderType,
-} from './types';
+} from '../services/types';
 
 // Re-export types
 export type {

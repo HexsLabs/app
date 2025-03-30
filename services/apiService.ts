@@ -10,7 +10,7 @@ import {
   EnvironmentVars,
   DeploymentConfig,
   ProviderType,
-} from '../types';
+} from './types';
 
 console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3080';
