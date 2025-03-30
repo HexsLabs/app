@@ -7,14 +7,12 @@ const services = [
     description:
       'The backend is the server-side of an application that handles data processing, business logic, database interactions, and API communication to support frontend functionality.',
     url: '/app/services/backend',
-    icon: '🖥️',
   },
   {
     name: 'Jupyter',
     description:
       'Jupyter Notebooks provide an interactive computing environment for creating and sharing documents containing live code, equations, visualizations, and narrative text.',
     url: '/app/services/jupyter',
-    icon: '📊',
   },
 ];
 
@@ -32,7 +30,6 @@ const ServicesPage = () => {
               <div className="gradient-border card-shadow h-full">
                 <div className="gradient-bg p-8 rounded-3xl hover-effect h-full flex flex-col">
                   <div className="flex items-center mb-4">
-                    <span className="text-4xl mr-3">{service.icon}</span>
                     <h3 className="text-2xl font-semibold">{service.name}</h3>
                   </div>
                   <p className="text-muted-foreground flex-grow">{service.description}</p>

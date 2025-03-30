@@ -10,19 +10,32 @@ import { WagmiProvider } from "wagmi";
 import { http, createConfig } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, darkTheme, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { baseSepolia } from "viem/chains";
 import { useState, useEffect } from "react";
+import {
+  metaMaskWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 
 const inter = Inter({ subsets: ["latin"] });
 
-const wagmiConfig = createConfig({
+const wagmiConfig = getDefaultConfig({
+    appName: 'Aquanode',
+    projectId: 'YOUR_PROJECT_ID', // You'll need to replace this with a WalletConnect project ID
     chains: [baseSepolia],
-    connectors: [injected()],
-    transports: {
-        [baseSepolia.id]: http(),
-    },
+    wallets: [
+        {
+            groupName: 'Popular',
+            wallets: [
+                metaMaskWallet,
+                coinbaseWallet,
+                walletConnectWallet,
+            ]
+        }
+    ],
 });
 
 const queryClient = new QueryClient();
