@@ -30,7 +30,7 @@ export default function BackendDeployment() {
       image: formData.get('image') as string,
     };
 
-    const data: DeployBackendRequest = {
+    const data: DeployCustomBackendRequest = {
       userId: 1, // Replace with actual user ID
       repoUrl: formData.get('repoUrl') as string || undefined,
       branchName: formData.get('branchName') as string || undefined,
