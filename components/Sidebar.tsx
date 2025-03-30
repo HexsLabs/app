@@ -26,14 +26,14 @@ export const Sidebar = () => {
                     Dashboard
                 </Button>
 
-                <Button
+                {/* <Button
                     variant="ghost"
                     className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
                     onClick={() => router.push("/app/templates")}
                 >
                     <FileText size={24} />
                     Templates
-                </Button>
+                </Button> */}
 
                 <Button
                     variant="ghost"
