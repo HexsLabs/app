@@ -71,9 +71,9 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
 
   return (
     <div className="space-y-4">
-      {deployments.map((deployment) => (
+      {deployments.map((deployment, index) => (
         <div 
-          key={deployment.deploymentId} 
+          key={index}
           className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
         >
           <div className="space-y-2 flex-grow">
