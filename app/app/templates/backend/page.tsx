@@ -4,6 +4,8 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { apiService } from '@/services/apiService';
+import { DeployDefaultBackendRequest } from '@/services/types';
 
 const Backend = () => {
     const router = useRouter();
@@ -14,36 +16,29 @@ const Backend = () => {
         router.push(from);
     };
 
-    const items = [
-        {
-            key: "Repository URL",
-            value: "https://github.com/Aquanodeio/templates/tree/main/backend-js",
-        },
-        {
-            key: "Branch Name",
-            value: "main",
-        },
-        {
-            key: "App Port",
-            value: "3000",
-        },
-        {
-            key: "Deployment Duration",
-            value: "1h",
-        },
-        {
-            key: "CPU Units",
-            value: "0.5",
-        },
-        {
-            key: "Memory Size",
-            value: "0.5Gi",
-        },
-        {
-            key: "Storage Size",
-            value: "0.5Gi",
-        },
-    ];
+    const items = {
+        "Repository URL": "https://github.com/Aquanodeio/templates/tree/main/backend-js",
+        "Branch Name": "main",
+        "App Port": "3000",
+        "Deployment Duration": "1h",
+        "CPU Units": "0.5",
+        "Memory Size": "0.5Gi",
+        "Storage Size": "0.5Gi",
+    };
+
+    async function deployBackend() {
+        const data: DeployDefaultBackendRequest = {
+          userId: 1,
+          repoUrl: items["Repository URL"],
+          branchName: items["Branch Name"],
+          env: {},
+          config: {
+            appPort: Number(items["App Port"]),
+          },
+        };
+        const response = await apiService.deployDefaultBackend(data);
+      }
+      
 
     return (
         <div className="container mx-auto px-4 py-6">
@@ -69,17 +64,17 @@ const Backend = () => {
             <div className="gradient-border card-shadow">
                 <div className="gradient-bg p-6 rounded-3xl">
                     <div className="space-y-4">
-                        {items.map((item) => (
+                        {Object.entries(items).map(([key, value]) => (
                             <div
-                                key={item.key}
+                                key={key}
                                 className="bg-secondary/20 p-4 rounded-xl"
                             >
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-muted-foreground">
-                                        {item.key}
+                                        {key}
                                     </span>
                                     <span className="text-foreground font-mono">
-                                        {item.value}
+                                        {value}
                                     </span>
                                 </div>
                             </div>

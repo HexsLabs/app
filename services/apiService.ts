@@ -1,5 +1,6 @@
 import {
-  DeployBackendRequest,
+  DeployCustomBackendRequest,
+  DeployDefaultBackendRequest,
   DeployCustomJupyterRequest,
   DeployDefaultJupyterRequest,
   DeploymentResponse,
@@ -67,14 +68,24 @@ class ApiService {
   }
 
   // Backend Services
-  async deployBackend(data: DeployBackendRequest): Promise<DeploymentResponse> {
-    return this.request<DeploymentResponse>('/api/services/backend/deploy', {
+  async deployDefaultBackend(data: DeployDefaultBackendRequest): Promise<DeploymentResponse> {
+    return this.request<DeploymentResponse>('/api/services/backend/deploy-default', {
       method: 'POST',
       body: JSON.stringify({
         ...data,
       }),
     });
   }
+
+  // Backend Services
+  async deployCustomBackend(data: DeployCustomBackendRequest): Promise<DeploymentResponse> {
+    return this.request<DeploymentResponse>('/api/services/backend/deploy-custom', {
+      method: 'POST',
+      body: JSON.stringify({
+          ...data,
+        }),
+      });
+    }
 
   // Create a new deployment
   async createDeployment(

@@ -86,7 +86,7 @@ const SDLBuilder: React.FC = () => {
             Quick Deployment
           </TabsTrigger>
           <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-            Advanced (SDL Builder)
+            Advanced Deployment
           </TabsTrigger>
         </TabsList>
         

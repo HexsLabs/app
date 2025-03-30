@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { apiService } from '../../../services/apiService';
-import { DeployBackendRequest, DeploymentConfig, ProviderType } from '../../../services/types';
+import { DeployCustomBackendRequest, DeploymentConfig, ProviderType } from '../../../services/types';
 
 export default function BackendDeployment() {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ export default function BackendDeployment() {
       setError(null);
       setSuccess(null);
       
-      const response = await apiService.deployBackend(data);
+      const response = await apiService.deployDefaultBackend(data);
       setSuccess(`${response.status} - ${response.url ? `Deployed at ${response.url}` : ''}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to deploy backend service');
