@@ -7,7 +7,7 @@ export default function BackendDeployment() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }]);
-  const [selectedProvider, setSelectedProvider] = useState<ProviderType>('AUTO');
+  const [selectedProvider, setSelectedProvider] = useState<ProviderType>('auto');
 
   const handleDeploy = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
