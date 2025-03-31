@@ -68,7 +68,6 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       <div>
         <h2 className="text-2xl font-bold text-white mb-4">Deploy Instance</h2>
         
-        {process.env.NEXT_PUBLIC_PROVIDER_TO_USE && (
         <div className="mb-4">
           <label className="block text-sm font-medium text-zinc-300 mb-1">Provider</label>
           <select
@@ -77,12 +76,10 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
             className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="AUTO">Auto (Default)</option>
-            <option value={process.env.NEXT_PUBLIC_PROVIDER_TO_USE}>
-              {process.env.NEXT_PUBLIC_PROVIDER_TO_USE}
-            </option>
+            <option value="AKASH">Akash</option>
+            <option value="SPHERON">Spheron</option>
           </select>
         </div>
-        )}
         {/* Default Deployment */}
         <div className="mb-12 p-6 border border-zinc-700 rounded-lg">
           <h3 className="text-xl font-semibold text-zinc-200 mb-3">Quick Deploy</h3>

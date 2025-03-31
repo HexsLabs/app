@@ -85,9 +85,9 @@ const SDLBuilder: React.FC = () => {
           <TabsTrigger value="quick" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             Quick Deployment
           </TabsTrigger>
-          <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+          {/* <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             Advanced Deployment
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
         
         <TabsContent value="quick" className="gradient-border card-shadow">
@@ -239,7 +239,7 @@ const SDLBuilder: React.FC = () => {
                     />
                   </div>
 
-                  <div className="bg-secondary/20 p-6 rounded-xl">
+                  {/* <div className="bg-secondary/20 p-6 rounded-xl">
                     <Label className="text-sm text-muted-foreground block mb-4">Token</Label>
                     <Select defaultValue="AKT">
                       <SelectTrigger className="bg-secondary/30 border-0">
@@ -249,7 +249,7 @@ const SDLBuilder: React.FC = () => {
                         <SelectItem value="AKT">AKT</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="mt-8 flex justify-end">
