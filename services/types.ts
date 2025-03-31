@@ -56,7 +56,7 @@ export interface DeploymentResponse {
     url?: string;
 }
 
-export type ProviderType = "AUTO" | "AKASH" | "SPHERON";
+export type ProviderType = "auto" | "akash" | "spheron";
 
 export enum ServiceType {
     JUPYTER = "JUPYTER",

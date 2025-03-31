@@ -11,7 +11,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<ProviderType>(
-    (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'AUTO'
+    (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'auto'
   );
 
   const handleDefaultDeploy = async () => {
