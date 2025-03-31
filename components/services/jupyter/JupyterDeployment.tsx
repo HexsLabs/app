@@ -45,7 +45,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
     // Validate duration format and range
     const durationValue = parseInt(duration);
     const durationUnit = duration.slice(-1);
-    let durationInMinutes = durationUnit === 'h' ? durationValue * 60 : durationValue;
+    const durationInMinutes = durationUnit === 'h' ? durationValue * 60 : durationValue;
 
     if (durationInMinutes < 60 || durationInMinutes > 720) {
       setError('Duration must be between 1h and 12h');
