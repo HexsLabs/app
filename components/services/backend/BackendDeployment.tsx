@@ -7,7 +7,6 @@ export default function BackendDeployment() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }]);
-  const [selectedProvider, setSelectedProvider] = useState<ProviderType>('AUTO');
 
   const handleDeploy = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +36,7 @@ export default function BackendDeployment() {
       branchName: formData.get('branchName') as string || undefined,
       env: Object.keys(env).length > 0 ? env : undefined,
       config,
-      provider: selectedProvider,
+      provider: formData.get('provider') as ProviderType || undefined,
     };
 
     try {
@@ -220,8 +219,6 @@ export default function BackendDeployment() {
             <select
               name="provider"
               className="w-full px-3 py-2 border rounded"
-              value={selectedProvider}
-              onChange={(e) => setSelectedProvider(e.target.value as ProviderType)}
             >
               <option value="AUTO">Auto</option>
               <option value="AKASH">Akash</option>
