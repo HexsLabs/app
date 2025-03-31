@@ -109,12 +109,13 @@ class ApiService {
   }
 
   // Deployment Services
-  async getUserDeployments(user: number, type?: ServiceType): Promise<Deployment[]> {
+  async getUserDeployments(user: number, type?: ServiceType, provider?: ProviderType): Promise<Deployment[]> {
     return this.request<GetDeploymentsResponse>('/api/deployments/user', {
       method: 'POST', 
       body: JSON.stringify({
         user,
         type: type || null,
+        provider: provider || null,
       } as GetDeploymentsRequest),
     }).then(response => {
       return response.deployments;
@@ -143,10 +144,14 @@ class ApiService {
   }
 
   // Get user deployments by type
-  async getUserDeploymentsByType(userId: number, type: string): Promise<Deployment[]> {
+  async getUserDeploymentsByType(userId: number, type: string, provider?: ProviderType): Promise<Deployment[]> {
     return this.request<Deployment[]>('/api/deployments/user', {
       method: 'POST',
-      body: JSON.stringify({ userId, type }),
+      body: JSON.stringify({ 
+        userId, 
+        type,
+        provider: provider || null 
+      }),
     });
   }
 }

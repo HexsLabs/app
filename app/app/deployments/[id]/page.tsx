@@ -151,6 +151,10 @@ export default function DeploymentDetailsPage() {
                             <h2 className="text-lg font-semibold mb-4">Configuration</h2>
                             <div className="space-y-3">
                                 <div>
+                                    <span className="text-sm text-muted-foreground block">Provider</span>
+                                    <span className="text-foreground capitalize">{deployment.provider}</span>
+                                </div>
+                                <div>
                                     <span className="text-sm text-muted-foreground block">CPU</span>
                                     <span className="text-foreground">{deployment.cpu} units</span>
                                 </div>

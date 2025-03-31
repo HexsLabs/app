@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
-import { Deployment, ServiceType } from '../../../../services/types';
+import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function JupyterPage() {
@@ -20,7 +20,8 @@ export default function JupyterPage() {
       setIsLoading(true);
       setError(null);
     //   NOTE: REPLACE THIS
-      const data = await api.getUserDeployments(5, ServiceType.JUPYTER); // Replace with actual user ID
+      const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto';
+      const data = await api.getUserDeployments(5, ServiceType.JUPYTER, envProvider); // Replace with actual user ID
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);
     } catch (err) {
