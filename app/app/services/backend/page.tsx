@@ -80,15 +80,12 @@ const SDLBuilder: React.FC = () => {
         <h1 className="text-4xl font-bold">Create Deployment</h1>
       </div>
 
-      <Tabs defaultValue="quick" className="w-full mb-8">
+      {/* <Tabs defaultValue="quick" className="w-full mb-8">
         <TabsList className="mb-6 bg-secondary">
           <TabsTrigger value="quick" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
             Quick Deployment
           </TabsTrigger>
-          {/* <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-            Advanced Deployment
-          </TabsTrigger> */}
-        </TabsList>
+        </TabsList> */}
         
         <TabsContent value="quick" className="gradient-border card-shadow">
           <div className="gradient-bg p-8 rounded-3xl">
