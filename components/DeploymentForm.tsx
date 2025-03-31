@@ -219,7 +219,6 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
             required
           />
         </div>
-
         <div>
           <Label htmlFor="env">Environment Variables (JSON)</Label>
           <Input
@@ -231,6 +230,20 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
             placeholder='{"KEY": "VALUE"}'
             className="mt-1"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-zinc-300 mb-1">Provider</label>
+          <select
+            value={"AUTO"}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, provider: e.target.value }))
+            }
+            className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="AUTO">Auto (Default)</option>
+            <option value="AKASH">Akash</option>
+            <option value="SPHERON">Spheron</option>
+          </select>
         </div>
       </div>
 
