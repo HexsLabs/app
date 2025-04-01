@@ -72,13 +72,24 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
+  // Routes that need the navbar but aren't part of the /app section
+  const routesWithNavbar = ["/signin", "/signup", "/reset-password"];
+  const needsNavbar = routesWithNavbar.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Routes that don't need the navbar (home page has its own header)
+  const isHomePage = pathname === "/";
+
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} min-h-screen bg-background`}>
         <Providers>
           <DesktopOnly>
             <div className="flex flex-col min-h-screen">
-              <Navbar />
+              {/* Show Navbar only on auth pages */}
+              {needsNavbar && <Navbar />}
+
               <main className="flex-1">
                 {pathname.startsWith("/app") ? (
                   <Layout>{children}</Layout>

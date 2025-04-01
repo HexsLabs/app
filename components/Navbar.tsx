@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Wallet, LogOut, User } from "lucide-react";
+import { Wallet, LogOut, User, Menu } from "lucide-react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuthSession } from "@/lib/auth/hooks/useAuthSession";
 import {
   DropdownMenu,
@@ -17,9 +17,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function Navbar() {
+export default function Navbar({
+  onMobileMenuToggle,
+}: {
+  onMobileMenuToggle?: () => void;
+}) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated, displayName, signOut, isLoading, accessToken } =
     useAuthSession();
 
@@ -32,44 +37,80 @@ export default function Navbar() {
     router.push("/");
   };
 
+  // Check if we're in the app section to display the menu toggle
+  const isAppSection = pathname?.startsWith("/app") ?? false;
+
   if (!mounted || isLoading) {
     return null;
   }
 
   return (
-    <nav className="border-b border-border bg-background">
-      <div className="flex justify-between h-20 items-center px-4 max-w-[129rem] mx-auto">
-        <div className="flex-shrink-0 pl-4">
-          <Link href="/" className="text-2xl font-bold text-foreground">
+    <nav className="border-b border-border/30 bg-background/80 backdrop-blur-md sticky top-0 z-10">
+      <div className="flex justify-between h-16 items-center px-6 max-w-[129rem] mx-auto">
+        <div className="flex items-center gap-3">
+          {isAppSection && onMobileMenuToggle && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden text-muted-foreground hover:text-primary"
+              onClick={onMobileMenuToggle}
+            >
+              <Menu size={20} />
+            </Button>
+          )}
+          <Link
+            href="/"
+            className="text-xl font-bold text-foreground hover:text-primary transition-colors duration-300"
+          >
             Aquanode
           </Link>
         </div>
-        <div className="flex items-center space-x-4">
-          <Link href="/app/dashboard">
-            <Button variant="ghost" className="text-foreground">
+        <div className="flex items-center gap-4">
+          <Link href="/app/dashboard" className="hidden sm:block">
+            <Button
+              variant="outline"
+              className="text-foreground border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            >
               Launch App
             </Button>
           </Link>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+                >
                   <User className="w-4 h-4" />
-                  {displayName}
+                  <span className="hidden sm:inline">{displayName}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4 mr-2" />
+              <DropdownMenuContent
+                align="end"
+                className="bg-secondary/80 backdrop-blur-md border-border/40"
+              >
+                <DropdownMenuLabel className="text-foreground/90">
+                  My Account
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/20" />
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="cursor-pointer hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <LogOut className="w-4 h-4 mr-2 opacity-70" />
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <Link href="/signin">
-              <Button variant="outline">Sign In</Button>
+              <Button
+                variant="secondary"
+                className="hover:bg-primary/10 hover:text-primary hover:border-primary/30"
+              >
+                <span className="hidden sm:inline">Sign In</span>
+                <User className="w-4 h-4 sm:hidden" />
+              </Button>
             </Link>
           )}
           {/* <ConnectButton.Custom>
@@ -100,7 +141,7 @@ export default function Navbar() {
                         <Button
                           onClick={openConnectModal}
                           variant="outline"
-                          className="flex items-center gap-2"
+                          className="flex items-center gap-2 border-border/40 hover:border-primary/30 hover:bg-primary/5"
                         >
                           <Wallet className="w-4 h-4" />
                           Connect Wallet
@@ -112,7 +153,7 @@ export default function Navbar() {
                       <Button
                         onClick={openChainModal}
                         variant="outline"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 border-border/40 hover:border-primary/30 hover:bg-primary/5"
                       >
                         {chain.hasIcon && (
                           <div className="w-4 h-4">
