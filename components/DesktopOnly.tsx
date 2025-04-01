@@ -7,7 +7,7 @@ const DesktopOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1280);
+      setIsDesktop(window.innerWidth >= 1080);
     };
 
     handleResize();
