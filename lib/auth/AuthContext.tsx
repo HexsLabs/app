@@ -8,6 +8,7 @@ import {
 import { AuthUser } from "./types";
 import { authService } from "./authService";
 import { supabase } from "../supabase";
+import { apiService } from "../../services/apiService";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -48,11 +49,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         const { session, error } = await authService.getSession();
 
+        console.log("session", session);
+
         if (error) {
           console.error("Error fetching session:", error);
         }
 
-        setAccessToken(session?.access_token || null);
+        const token = session?.access_token || null;
+        setAccessToken(token);
+        apiService.setAccessToken(token);
 
         setUser(session?.user || null);
       } catch (error) {
@@ -67,6 +72,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Set up auth state listener
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        const token = session?.access_token || null;
+        setAccessToken(token);
+        apiService.setAccessToken(token);
+
         setUser(session?.user || null);
         setIsLoading(false);
       }

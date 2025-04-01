@@ -1,7 +1,7 @@
 import { useAuth } from "../AuthContext";
 
 export function useAuthSession() {
-  const { user, isLoading, signOut } = useAuth();
+  const { user, isLoading, signOut, accessToken } = useAuth();
 
   return {
     user,
@@ -10,5 +10,6 @@ export function useAuthSession() {
     isAuthenticated: !!user,
     userEmail: user?.email,
     displayName: user?.email?.split("@")[0] || "User",
+    accessToken: accessToken,
   };
 }

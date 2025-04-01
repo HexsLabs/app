@@ -20,7 +20,8 @@ import {
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { isAuthenticated, displayName, signOut, isLoading } = useAuthSession();
+  const { isAuthenticated, displayName, signOut, isLoading, accessToken } =
+    useAuthSession();
 
   useEffect(() => {
     setMounted(true);

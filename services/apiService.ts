@@ -23,14 +23,25 @@ interface UserResponse {
 }
 
 class ApiService {
+  private accessToken: string | null = null;
+
+  public setAccessToken(token: string | null) {
+    console.log("setting accessToken", token);
+    this.accessToken = token;
+  }
+
   public async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
+    console.log("accessToken", this.accessToken);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
+        ...(this.accessToken && {
+          Authorization: `Bearer ${this.accessToken}`,
+        }),
         ...options.headers,
       },
     });
