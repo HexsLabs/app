@@ -129,6 +129,10 @@ export class AuthService {
 
   // Sign in with Google
   async signInWithGoogle(): Promise<{ error: Error | null }> {
+    console.log(
+      "Signing in with Google",
+      `${window.location.origin}/app/dashboard`
+    );
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
