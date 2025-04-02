@@ -176,7 +176,7 @@ export default function Dashboard() {
             Manage your deployments and applications
           </p>
         </div>
-        <Link href="/app/create">
+        <Link href="/app/services">
           <Button
             size="lg"
             variant="gradient"
