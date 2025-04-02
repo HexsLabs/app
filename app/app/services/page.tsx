@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const services = [
   {
-    name: "Backend",
+    name: "Custom Deployment",
     description:
-      "The backend is the server-side of an application that handles data processing, business logic, database interactions, and API communication to support frontend functionality.",
+      "Use this for deploying servers, APIs, and other backend services that handle data processing, business logic, and database interactions to support your applications.",
     url: "/app/services/backend",
   },
   {
