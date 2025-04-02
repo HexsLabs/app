@@ -4,31 +4,14 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Loader2,
-  GitBranch,
-  Server,
-  Settings2,
-  ArrowRight,
-  Code,
-  Package,
-  Check,
-} from "lucide-react";
-import { useAuth } from "@/lib/auth/AuthContext";
-import {
-  CPU_CONSTRAINTS,
-  MEMORY_CONSTRAINTS,
-  DURATION_CONSTRAINTS,
-  ENVIRONMENT_VARS_DEFAULT,
-  Unit,
-} from "@/constants/constrains";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Info, Loader2, GitBranch, Server, Settings2, ArrowRight, Code, Package, Check } from 'lucide-react';
+import { DeploymentForm } from '@/components/DeploymentForm';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from '@/lib/auth/AuthContext';
+import Link from "next/link";
+import { CPU_CONSTRAINTS, MEMORY_CONSTRAINTS, DURATION_CONSTRAINTS, ENVIRONMENT_VARS_DEFAULT, Unit } from "@/constants/constrains";
 import { toast } from "sonner";
 import { createDeployment, DeploymentConfig, EnvironmentVars } from "@/lib/api";
 
@@ -169,7 +152,7 @@ const SDLBuilder: React.FC = () => {
       const config: DeploymentConfig = {
         appPort: portNumber,
         deploymentDuration: `${values.deploymentDuration}h`,
-        appCpuUnits: parseInt(values.cpuValue),
+        appCpuUnits: parseFloat(values.cpuValue),
         appMemorySize: `${values.memoryValue}${values.memoryUnit}`,
         appStorageSize: `${values.ephemeralValue}${values.ephemeralUnit}`,
       };
@@ -819,7 +802,7 @@ const SDLBuilder: React.FC = () => {
                     setValues({ ...values, deploymentDuration: 0 });
                     setDurationError("Duration value is required");
                   } else {
-                    const value = parseInt(inputValue);
+                    const value = parseFloat(inputValue);
                     if (!isNaN(value)) {
                       setValues({ ...values, deploymentDuration: value });
                       validateDuration(value);

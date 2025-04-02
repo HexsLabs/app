@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter, usePathname } from "next/navigation";
 import { FileText, Plus, Sparkles, Grid } from "lucide-react";
 import Link from "next/link";
+import { templates } from "@/components/templates";
 
 interface SidebarProps {
   isMobileOpen?: boolean;
@@ -59,16 +60,28 @@ export const Sidebar = ({ isMobileOpen }: SidebarProps) => {
           <span>Dashboard</span>
         </Button>
 
-        {/* <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3 text-white hover:bg-black hover:text-white py-6 text-lg"
-                    onClick={() => router.push("/app/templates")}
-                >
-                    <FileText size={24} />
-                    Templates
-                </Button> */}
-
         <Button
+          variant="ghost"
+          className={`w-full justify-start gap-3 ${
+            pathname?.includes("/app/templates")
+              ? "text-primary bg-primary/10"
+              : "text-muted-foreground"
+          } hover:text-primary hover:bg-primary/10 py-4 rounded-xl group`}
+          onClick={() => router.push("/app/templates")}
+        >
+          <FileText
+            size={20}
+            className={`${
+              pathname?.includes("/app/templates")
+                ? "text-primary"
+                : "text-muted-foreground"
+            } group-hover:text-primary transition-colors`}
+          />
+          <span>Templates</span>
+        </Button>
+
+        {/* AI Button - commented out as requested */}
+        {/* <Button
           variant="ghost"
           className={`w-full justify-start gap-3 ${
             pathname?.includes("/app/chatbot")
@@ -107,6 +120,22 @@ export const Sidebar = ({ isMobileOpen }: SidebarProps) => {
           <span>AI</span>
         </Button> */}
       </nav>
+
+      {/* Templates Section */}
+      <div className="mt-4 mb-auto border-t border-border/30 pt-4">
+        <h3 className="text-sm font-medium mb-3 text-muted-foreground">Templates</h3>
+        <div className="space-y-2">
+          {templates.map((template, index) => (
+            <Link 
+              key={index} 
+              href={template.url}
+              className="block text-sm text-muted-foreground hover:text-primary transition-colors py-1.5 px-2 rounded hover:bg-primary/5"
+            >
+              {template.name}
+            </Link>
+          ))}
+        </div>
+      </div>
 
       <div className="mt-auto pt-6 border-t border-border/30 text-muted-foreground/70 text-sm flex items-center">
         <a

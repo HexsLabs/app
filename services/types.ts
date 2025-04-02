@@ -16,14 +16,19 @@ export interface DeployCustomJupyterRequest {
 
 // Backend Service Types
 export interface DeployDefaultBackendRequest {
-  userId: number;
-  repoUrl?: string;
-  branchName?: string;
-  env?: Record<string, string>;
-  config: {
-    appPort: number;
-  };
-  provider?: ProviderType;
+    userId: number;
+    repoUrl?: string;
+    branchName?: string;
+    env?: Record<string, string>;
+    config: {
+        appPort: number;
+        deploymentDuration?: string;
+        appCpuUnits?: number;
+        appMemorySize?: string;
+        appStorageSize?: string;
+        runCommands?: string;
+    };
+    provider?: ProviderType;
 }
 
 export interface DeployCustomBackendRequest {
@@ -37,13 +42,14 @@ export interface DeployCustomBackendRequest {
 
 // Common Services Types
 export interface DeploymentConfig {
-  appPort: number;
-  deploymentMode?: string;
-  deploymentDuration: string;
-  appCpuUnits: number;
-  appMemorySize: string;
-  appStorageSize: string;
-  image?: string | null;
+    appPort: number;
+    deploymentMode?: string;
+    deploymentDuration: string;
+    appCpuUnits: number;
+    appMemorySize: string;
+    appStorageSize: string;
+    image?: string | null;
+    runCommands?: string;
 }
 
 export interface EnvironmentVars {

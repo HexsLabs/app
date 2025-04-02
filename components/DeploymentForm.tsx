@@ -20,6 +20,7 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
     appStorageSize: string;
     repoUrl: string;
     branchName: string;
+    runCommands: string;
     env: string;
   }>({
     appPort: '3000',
@@ -29,13 +30,46 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
     appStorageSize: '0.5Gi',
     repoUrl: '',
     branchName: 'main',
+    runCommands: '',
     env: '{}',
   });
 
-  // Log the user ID when it changes
+  // Load pre-filled data from localStorage if available
   useEffect(() => {
     console.log('DeploymentForm initialized with userId:', userId);
-  }, [userId]);
+    
+    // Check if we have template pre-fill data in localStorage
+    if (typeof window !== 'undefined') {
+      const templateData = localStorage.getItem('templatePreFill');
+      if (templateData) {
+        try {
+          const parsedData = JSON.parse(templateData);
+          setFormData(prevData => ({
+            ...prevData,
+            appPort: parsedData.appPort || prevData.appPort,
+            deploymentDuration: parsedData.deploymentDuration || prevData.deploymentDuration,
+            appCpuUnits: parsedData.appCpuUnits || prevData.appCpuUnits,
+            appMemorySize: parsedData.appMemorySize || prevData.appMemorySize,
+            appStorageSize: parsedData.appStorageSize || prevData.appStorageSize,
+            repoUrl: parsedData.repoUrl || prevData.repoUrl,
+            branchName: parsedData.branchName || prevData.branchName,
+            runCommands: parsedData.runCommands || prevData.runCommands,
+          }));
+          
+          // Clear the template data from localStorage after using it
+          localStorage.removeItem('templatePreFill');
+          
+          toast({
+            title: "Template Data Loaded",
+            description: "The form has been pre-filled with template data.",
+            duration: 3000,
+          });
+        } catch (error) {
+          console.error('Error parsing template data:', error);
+        }
+      }
+    }
+  }, [userId, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +84,7 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
         appCpuUnits: parseFloat(formData.appCpuUnits),
         appMemorySize: formData.appMemorySize,
         appStorageSize: formData.appStorageSize,
+        runCommands: formData.runCommands,
       };
 
       let env: EnvironmentVars = {};
@@ -103,6 +138,7 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
         appStorageSize: '0.5Gi',
         repoUrl: '',
         branchName: 'main',
+        runCommands: '',
         env: '{}',
       });
     } catch (error) {
@@ -146,7 +182,6 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
             className="mt-1"
           />
         </div>
-
         <div>
           <Label htmlFor="appPort">App Port</Label>
           <Input
@@ -233,6 +268,18 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
           />
         </div>
       </div>
+      <div>
+          <Label htmlFor="runCommands">Run Commands (optional)</Label>
+          <Input
+            id="runCommands"
+            value={formData.runCommands}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, runCommands: e.target.value }))
+            }
+            placeholder="Optional for JS apps, otherwise e.g., pip install -r requirements.txt && python app.py"
+            className="my-1"
+          />
+        </div>
 
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? 'Creating Deployment...' : 'Create Deployment'}

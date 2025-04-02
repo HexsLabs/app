@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Paperclip, ArrowUp, Bot, User } from "lucide-react";
 import React from "react";
-import Link from "next/link";
 
 interface Message {
   text: string;
@@ -181,61 +180,7 @@ const ChatInterface = () => {
             </div>
           </div>
         </div>
-
-        {/* Templates section */}
-        <div className="max-w-5xl mx-auto w-full mb-6">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-foreground mb-2">
-              Quick Templates
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Start with a template to deploy faster
-            </p>
-          </div>
-          <Templates />
-        </div>
       </div>
-    </div>
-  );
-};
-
-const templates = [
-  {
-    name: "Custom Deployment",
-    description:
-      "Use this for deploying servers, APIs, and other backend services that handle data processing, business logic, and database interactions to support your applications.",
-    url: "/app/templates/backend?from=/app/chatbot",
-  },
-  {
-    name: "Next.js",
-    description:
-      "Next.js is a React framework that enables server-side rendering, static site generation, and optimized performance for building fast, scalable web applications.",
-    url: "/app/templates/nextjs?from=/app/chatbot",
-  },
-];
-
-const Templates = () => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {templates.map((template, index) => (
-        <Link key={index} href={template.url} className="block group">
-          <div className="dashboard-card subtle-glow h-full">
-            <div className="flex flex-col h-full">
-              <h3 className="text-base font-medium text-foreground group-hover:text-primary transition-colors duration-300">
-                {template.name}
-              </h3>
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                {template.description}
-              </p>
-              <div className="mt-3 text-right">
-                <span className="text-sm text-primary font-medium group-hover:translate-x-1 inline-flex transition-transform duration-300">
-                  Use template →
-                </span>
-              </div>
-            </div>
-          </div>
-        </Link>
-      ))}
     </div>
   );
 };
