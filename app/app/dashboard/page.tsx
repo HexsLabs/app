@@ -7,6 +7,7 @@ import { getDeployments } from "../../../lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { ProviderType } from "../../../services/types";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface Deployment {
   deploymentId: string;
@@ -164,6 +165,8 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
 }
 
 export default function Dashboard() {
+  const { user, isLoading } = useAuth();
+  
   return (
     <div className="container mx-auto px-6 py-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
@@ -189,8 +192,19 @@ export default function Dashboard() {
           <h2 className="text-2xl font-semibold mb-6 text-foreground">
             Your Deployments
           </h2>
-          {/* NOTE THIS IS HARDCODED FOR NOW, WILL BE CHANGED TO THE ACTUAL USER ID */}
-          <DeploymentTable userId={5} />
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12 text-muted-foreground">
+              <div className="animate-pulse">Loading authentication...</div>
+            </div>
+          ) : user?.id ? (
+            <DeploymentTable userId={parseInt(user.id)} />
+          ) : (
+            <div className="text-center py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
+              <p className="text-lg text-muted-foreground">
+                Please sign in to view your deployments
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <Toaster />

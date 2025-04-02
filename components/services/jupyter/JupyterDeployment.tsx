@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../../../lib/api';
 import { DeployCustomJupyterRequest, ProviderType } from '../../../services/types';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 interface JupyterDeploymentProps {
   onDeploymentComplete?: () => void;
@@ -13,6 +14,17 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
   const [selectedProvider, setSelectedProvider] = useState<ProviderType>(
     (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'auto'
   );
+  const { user } = useAuth();
+
+  if (!user?.id) {
+    return (
+      <div className="p-6 bg-zinc-800/50 rounded-lg text-center">
+        <p className="text-zinc-400">You must be logged in to deploy Jupyter notebooks</p>
+      </div>
+    );
+  }
+
+  const userId = parseInt(user.id);
 
   const handleDefaultDeploy = async () => {
     try {
@@ -21,7 +33,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       setSuccess(null);
       
       const response = await api.deployDefaultJupyter({ 
-        userId: 5, // TODO: REPLACE THIS WITH THE ACTUAL USER ID
+        userId: userId,
         provider: selectedProvider
       });
       setSuccess(response.status);
@@ -58,9 +70,8 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       return `${numericValue}Gi`;
     };
 
-    // TODO: REPLACE THIS WITH THE ACTUAL USER ID
     const data: DeployCustomJupyterRequest = {
-      userId: 5, // Replace with actual user ID
+      userId: userId,
       cpuUnits: Number(formData.get('cpuUnits')),
       memorySize: formatSize(memorySize),
       storageSize: formatSize(storageSize),
