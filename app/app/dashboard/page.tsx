@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/toaster';
-import { useEffect, useState } from 'react';
-import { getDeployments } from '../../../lib/api';
-import { useToast } from '@/components/ui/use-toast';
-import Link from 'next/link';
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
+import { useEffect, useState } from "react";
+import { getDeployments } from "../../../lib/api";
+import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
+import { ProviderType } from "../../../services/types";
+import { useAuth } from "@/lib/auth/AuthContext";
 
 interface Deployment {
   deploymentId: string;
   appUrl: string;
   createdAt?: string;
+  provider?: string;
 }
 
 interface DeploymentTableProps {
@@ -22,19 +25,27 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Get the provider from environment variable
+  const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as
+    | ProviderType
+    | undefined;
+
   useEffect(() => {
     const fetchDeployments = async () => {
       try {
-        const response = await getDeployments(userId);
-        setDeployments(response?.map(deployment => ({
-          ...deployment,
-          appUrl: deployment.appUrl || ''
-        })) || []);
+        // If NEXT_PUBLIC_PROVIDER_TO_USE is set, only show deployments from that provider
+        const response = await getDeployments(userId, envProvider);
+        setDeployments(
+          response?.map((deployment) => ({
+            ...deployment,
+            appUrl: deployment.appUrl || "",
+          })) || []
+        );
       } catch (error) {
         toast({
-          title: 'Error',
-          description: 'Failed to fetch deployments',
-          variant: 'destructive',
+          title: "Error",
+          description: "Failed to fetch deployments",
+          variant: "destructive",
         });
       } finally {
         setLoading(false);
@@ -45,108 +56,155 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
     const interval = setInterval(fetchDeployments, 10000); // Refresh every 10 seconds
 
     return () => clearInterval(interval);
-  }, [toast, userId]);
+  }, [toast, userId, envProvider]);
 
   // Format date safely
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
       return new Date(dateString).toLocaleString();
     } catch (error) {
-      return 'Invalid date';
+      return "Invalid date";
     }
   };
 
   if (loading) {
-    return <div className="text-center">Loading deployments...</div>;
-  }
-
-  if (deployments.length === 0) {
     return (
-      <div className="text-center text-gray-400">
-        No active deployments found
+      <div className="flex justify-center items-center py-12 text-muted-foreground">
+        <div className="animate-pulse">Loading deployments...</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      {deployments.map((deployment, index) => (
-        <div 
-          key={index}
-          className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-        >
-          <div className="space-y-2 flex-grow">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-400">ID:</span>
-              <Link href={`/app/deployments/${deployment.deploymentId}`} className="text-foreground hover:text-foreground/80 hover:underline font-medium">
-                {deployment.deploymentId}
-              </Link>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-400">URL:</span>
-              <a
-                href={deployment.appUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground hover:text-foreground/80 hover:underline truncate max-w-md"
-                title={deployment.appUrl}
-              >
-                {deployment.appUrl}
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-400">Created:</span>
-              <span>{formatDate(deployment.createdAt)}</span>
-            </div>
-          </div>
-          <div className="flex gap-2 self-end md:self-center">
-            <Link href={`/app/deployments/${deployment.deploymentId}`} passHref>
-              <Button size="sm" variant="outline" className="hover-effect">
-                View
-              </Button>
-            </Link>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hover-effect"
-              onClick={() => {
-                // TODO: Implement delete deployment
-                toast({
-                  title: 'Not implemented',
-                  description: 'Delete deployment functionality coming soon',
-                });
-              }}
-            >
-              Delete
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {deployments.length === 0 ? (
+        <div className="text-center py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
+          <p className="text-lg text-muted-foreground">
+            {envProvider
+              ? `No active deployments found for provider: ${envProvider}`
+              : "No active deployments found"}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground/70">
+            Create a new deployment to get started
+          </p>
         </div>
-      ))}
+      ) : (
+        <div className="grid gap-4">
+          {deployments.map((deployment, index) => (
+            <div
+              key={index}
+              className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            >
+              <div className="space-y-3 flex-grow">
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground text-sm">ID:</span>
+                  <Link
+                    href={`/app/deployments/${deployment.deploymentId}`}
+                    className="text-foreground hover:text-primary hover:underline font-medium"
+                  >
+                    {deployment.deploymentId}
+                  </Link>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground text-sm">URL:</span>
+                  <a
+                    href={deployment.appUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground hover:text-primary hover:underline truncate max-w-md"
+                    title={deployment.appUrl}
+                  >
+                    {deployment.appUrl}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-muted-foreground text-sm">
+                    Created:
+                  </span>
+                  <span className="text-muted-foreground/90">
+                    {formatDate(deployment.createdAt)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-3 self-end md:self-center">
+                <Link
+                  href={`/app/deployments/${deployment.deploymentId}`}
+                  passHref
+                >
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="hover-effect px-5"
+                  >
+                    View
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hover-effect text-destructive hover:text-destructive px-5"
+                  onClick={() => {
+                    // TODO: Implement delete deployment
+                    toast({
+                      title: "Not implemented",
+                      description:
+                        "Delete deployment functionality coming soon",
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function Dashboard() {
+  const { user, isLoading } = useAuth();
+  
   return (
-    <div className="container mx-auto px-6 py-8">
-      <div className="flex justify-between items-center mb-12">
+    <div className="container mx-auto px-6 py-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <div>
-          <h1 className="text-4xl font-bold mb-3 text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Manage your deployments and applications</p>
+          <h1 className="section-title">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Manage your deployments and applications
+          </p>
         </div>
-        <Link href="/app/create">
-          <Button size="lg" className="tracking-wide">
+        <Link href="/app/services">
+          <Button
+            size="lg"
+            variant="gradient"
+            className="shadow-lg shadow-primary/10 hover-effect"
+          >
             Create Deployment
           </Button>
         </Link>
       </div>
 
-      <div className="gradient-border card-shadow">
-        <div className="gradient-bg p-8 rounded-3xl">
-          <h2 className="text-2xl font-semibold mb-8 text-foreground">Your Deployments</h2>
-          {/* NOTE THIS IS HARDCODED FOR NOW, WILL BE CHANGED TO THE ACTUAL USER ID */}
-          <DeploymentTable userId={5} />
+      <div className="subtle-glow mb-8">
+        <div className="dashboard-card">
+          <h2 className="text-2xl font-semibold mb-6 text-foreground">
+            Your Deployments
+          </h2>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-12 text-muted-foreground">
+              <div className="animate-pulse">Loading authentication...</div>
+            </div>
+          ) : user?.id ? (
+            <DeploymentTable userId={parseInt(user.id)} />
+          ) : (
+            <div className="text-center py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
+              <p className="text-lg text-muted-foreground">
+                Please sign in to view your deployments
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <Toaster />

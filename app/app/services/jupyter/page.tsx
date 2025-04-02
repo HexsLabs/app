@@ -3,24 +3,34 @@
 import { useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
-import { Deployment, ServiceType } from '../../../../services/types';
+import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function JupyterPage() {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
-    fetchDeployments();
-  }, []);
+    if (!authLoading) {
+      fetchDeployments();
+    }
+  }, [authLoading]);
 
   const fetchDeployments = async () => {
+    if (!user?.id) {
+      setError('Please sign in to view deployments');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-    //   NOTE: REPLACE THIS
-      const data = await api.getUserDeployments(5, ServiceType.JUPYTER); // Replace with actual user ID
+      const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto';
+      const data = await api.getUserDeployments(parseInt(user.id), ServiceType.JUPYTER, envProvider);
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -97,12 +107,26 @@ export default function JupyterPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Deployment Form */}
           <div className="lg:col-span-2">
-            <JupyterDeployment onDeploymentComplete={fetchDeployments} />
+            {authLoading ? (
+              <div className="bg-zinc-800/50 rounded-lg p-6 text-center">
+                <p className="text-zinc-400">Loading authentication...</p>
+              </div>
+            ) : user?.id ? (
+              <JupyterDeployment onDeploymentComplete={fetchDeployments} />
+            ) : (
+              <div className="bg-zinc-800/50 rounded-lg p-6 text-center">
+                <p className="text-zinc-400">Please sign in to deploy Jupyter notebooks</p>
+              </div>
+            )}
 
             {/* Deployments List */}
             <div className="mt-8 bg-zinc-800/50 rounded-lg p-6">
               <h3 className="text-lg font-medium text-white mb-4">Recent Deployments</h3>
-              {isLoading ? (
+              {authLoading ? (
+                <p className="text-zinc-400">Loading authentication...</p>
+              ) : !user?.id ? (
+                <p className="text-zinc-400">Please sign in to view deployments</p>
+              ) : isLoading ? (
                 <p className="text-zinc-400">Loading deployments...</p>
               ) : error ? (
                 <p className="text-red-400">{error}</p>

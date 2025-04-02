@@ -84,4 +84,5 @@ export interface GetDeploymentsResponse {
 export interface GetDeploymentsRequest {
     user: number;
     type?: ServiceType | null;
+    provider?: ProviderType | null;
 }

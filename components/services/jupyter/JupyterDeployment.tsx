@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../../../lib/api';
 import { DeployCustomJupyterRequest, ProviderType } from '../../../services/types';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 interface JupyterDeploymentProps {
   onDeploymentComplete?: () => void;
@@ -13,6 +14,17 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
   const [selectedProvider, setSelectedProvider] = useState<ProviderType>(
     (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'auto'
   );
+  const { user } = useAuth();
+
+  if (!user?.id) {
+    return (
+      <div className="p-6 bg-zinc-800/50 rounded-lg text-center">
+        <p className="text-zinc-400">You must be logged in to deploy Jupyter notebooks</p>
+      </div>
+    );
+  }
+
+  const userId = parseInt(user.id);
 
   const handleDefaultDeploy = async () => {
     try {
@@ -21,7 +33,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       setSuccess(null);
       
       const response = await api.deployDefaultJupyter({ 
-        userId: 5, // TODO: REPLACE THIS WITH THE ACTUAL USER ID
+        userId: userId,
         provider: selectedProvider
       });
       setSuccess(response.status);
@@ -37,13 +49,33 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    // TODO: REPLACE THIS WITH THE ACTUAL USER ID
+    // Get raw values
+    const memorySize = formData.get('memorySize') as string;
+    const storageSize = formData.get('storageSize') as string;
+    const duration = formData.get('duration') as string;
+
+    // Validate duration format and range
+    const durationValue = parseInt(duration);
+    const durationUnit = duration.slice(-1);
+    const durationInMinutes = durationUnit === 'h' ? durationValue * 60 : durationValue;
+
+    if (durationInMinutes < 60 || durationInMinutes > 720) {
+      setError('Duration must be between 1h and 12h');
+      return;
+    }
+
+    // Add Gi suffix if not present
+    const formatSize = (size: string) => {
+      const numericValue = size.replace(/[^0-9]/g, '');
+      return `${numericValue}Gi`;
+    };
+
     const data: DeployCustomJupyterRequest = {
-      userId: 5, // Replace with actual user ID
+      userId: userId,
       cpuUnits: Number(formData.get('cpuUnits')),
-      memorySize: formData.get('memorySize') as string,
-      storageSize: formData.get('storageSize') as string,
-      duration: formData.get('duration') as string,
+      memorySize: formatSize(memorySize),
+      storageSize: formatSize(storageSize),
+      duration: duration,
       image: formData.get('image') as string || undefined,
       provider: selectedProvider
     };
@@ -118,39 +150,43 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1">Memory Size</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">Memory Size (Gi)</label>
               <input
-                type="text"
+                type="number"
                 name="memorySize"
                 required
-                placeholder="e.g., 2Gi"
+                min="1"
+                placeholder="e.g., 2"
                 className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1">Storage Size</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">Storage Size (Gi)</label>
               <input
-                type="text"
+                type="number"
                 name="storageSize"
                 required
-                placeholder="e.g., 10Gi"
+                min="1"
+                placeholder="e.g., 10"
                 className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1">Duration</label>
+              <label className="block text-sm font-medium text-zinc-300 mb-1">Duration (1h to 12h)</label>
               <input
                 type="text"
                 name="duration"
                 required
-                placeholder="e.g., 1h"
+                pattern="^([1-9]h|1[0-2]h)$"
+                placeholder="e.g., 1h or 12h"
+                title="Enter duration between 1h to 12h"
                 className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-zinc-300 mb-1">Custom Image (Optional)</label>
               <input
                 type="text"
@@ -158,7 +194,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
                 placeholder="Docker image URL"
                 className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -184,4 +220,4 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
       </div>
     </div>
   );
-} 
+}
