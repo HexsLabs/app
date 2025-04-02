@@ -241,8 +241,8 @@ export function DeploymentForm({ userId }: DeploymentFormProps) {
             className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="AUTO">Auto (Default)</option>
-            <option value="AKASH">Akash</option>
-            <option value="SPHERON">Spheron</option>
+            <option value="AKASH">Akash Network</option>
+            <option value="SPHERON">Spheron Network</option>
           </select>
         </div>
       </div>

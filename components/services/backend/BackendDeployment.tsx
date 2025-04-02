@@ -224,8 +224,8 @@ export default function BackendDeployment() {
               onChange={(e) => setSelectedProvider(e.target.value as ProviderType)}
             >
               <option value="AUTO">Auto</option>
-              <option value="AKASH">Akash</option>
-              <option value="SPHERON">Spheron</option>
+              <option value="AKASH">Akash Network</option>
+              <option value="SPHERON">Spheron Network</option>
             </select>
           </div>
 

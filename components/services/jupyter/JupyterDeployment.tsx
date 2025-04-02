@@ -108,8 +108,8 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
             className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="auto">Auto (Default)</option>
-            <option value="akash">Akash</option>
-            <option value="spheron">Spheron</option>
+            <option value="akash">Akash Network</option>
+            <option value="spheron">Spheron Network</option>
           </select>
         </div>
         {/* Default Deployment */}
