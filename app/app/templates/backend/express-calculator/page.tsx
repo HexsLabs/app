@@ -133,10 +133,10 @@ const ExpressCalculatorTemplate = () => {
                                 </div>
                             </div>
                         ))}
-                        <div className="pt-4 flex gap-4">
-                            <Button size="lg" onClick={handleEditCustom} variant="outline" className="w-1/2">
+                        <div className="pt-4 flex gap-4 justify-end">
+                            {/* <Button size="lg" onClick={handleEditCustom} variant="outline" className="w-1/2">
                                 Customize
-                            </Button>
+                            </Button> */}
                             <Button 
                                 size="lg" 
                                 className="w-1/2" 

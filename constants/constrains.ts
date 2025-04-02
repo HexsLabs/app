@@ -18,7 +18,7 @@ export const MEMORY_CONSTRAINTS = {
 export const DURATION_CONSTRAINTS = {
   MIN_HOURS: 1,
   MAX_HOURS: 168, // 7 days
-  DEFAULT_HOURS: 24,
+  DEFAULT_HOURS: 1,
   QUICK_SELECTIONS: [1, 24, 72, 168], // 1 hour, 1 day, 3 days, 7 days
 };
 

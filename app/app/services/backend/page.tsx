@@ -152,7 +152,7 @@ const SDLBuilder: React.FC = () => {
       const config: DeploymentConfig = {
         appPort: portNumber,
         deploymentDuration: `${values.deploymentDuration}h`,
-        appCpuUnits: parseInt(values.cpuValue),
+        appCpuUnits: parseFloat(values.cpuValue),
         appMemorySize: `${values.memoryValue}${values.memoryUnit}`,
         appStorageSize: `${values.ephemeralValue}${values.ephemeralUnit}`,
       };
@@ -802,7 +802,7 @@ const SDLBuilder: React.FC = () => {
                     setValues({ ...values, deploymentDuration: 0 });
                     setDurationError("Duration value is required");
                   } else {
-                    const value = parseInt(inputValue);
+                    const value = parseFloat(inputValue);
                     if (!isNaN(value)) {
                       setValues({ ...values, deploymentDuration: value });
                       validateDuration(value);
