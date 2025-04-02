@@ -13,7 +13,7 @@ import {
   ProviderType,
 } from "./types";
 
-console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
+// console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3080";
 
 // User response interface

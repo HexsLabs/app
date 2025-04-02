@@ -110,7 +110,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
           >
             <option value="AUTO">Auto (Default)</option>
             <option value={process.env.NEXT_PUBLIC_PROVIDER_TO_USE}>
-              {process.env.NEXT_PUBLIC_PROVIDER_TO_USE}
+              {process.env.NEXT_PUBLIC_PROVIDER_TO_USE.toUpperCase()} Network
             </option>
           </select>
         </div>
