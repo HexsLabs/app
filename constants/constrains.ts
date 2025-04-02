@@ -23,6 +23,6 @@ export const DURATION_CONSTRAINTS = {
 };
 
 export const ENVIRONMENT_VARS_DEFAULT =
-  '{\n  "PORT": "3000",\n  "NODE_ENV": "production"\n}';
+  '{\n  "NODE_ENV": "production"\n}';
 
 export type Unit = "Mi" | "Gi";

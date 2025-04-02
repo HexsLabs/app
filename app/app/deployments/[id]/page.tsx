@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { getDeploymentById, closeDeployment, Deployment } from '../../../../lib/api';
 import { Button } from '@/components/ui/button';
@@ -14,11 +14,7 @@ export default function DeploymentDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [closing, setClosing] = useState(false);
 
-    useEffect(() => {
-        fetchDeployment();
-    }, []);
-
-    const fetchDeployment = async () => {
+    const fetchDeployment = useCallback(async () => {
         try {
             const data = await getDeploymentById(Number(params.id));
             setDeployment(data);
@@ -31,7 +27,13 @@ export default function DeploymentDetailsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [params.id, toast]);
+
+    useEffect(() => {
+        fetchDeployment();
+    }, [fetchDeployment]);
+
+   
 
     const handleClose = async () => {
         if (!deployment) return;

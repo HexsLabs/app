@@ -118,7 +118,7 @@ const SDLBuilder: React.FC = () => {
           <div className="gradient-bg p-8 rounded-3xl">
             <h2 className="text-2xl font-semibold mb-6">Create Quick Deployment</h2>
             {renderAuthContent(
-              <DeploymentForm userId={parseInt(user!.id)} />
+              <DeploymentForm userId={user!.id} />
             )}
           </div>
         </TabsContent>

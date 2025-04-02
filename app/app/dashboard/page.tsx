@@ -17,7 +17,7 @@ interface Deployment {
 }
 
 interface DeploymentTableProps {
-  userId: number;
+  userId: string;
 }
 
 function DeploymentTable({ userId }: DeploymentTableProps) {
@@ -197,7 +197,7 @@ export default function Dashboard() {
               <div className="animate-pulse">Loading authentication...</div>
             </div>
           ) : user?.id ? (
-            <DeploymentTable userId={parseInt(user.id)} />
+            <DeploymentTable userId={user.id} />
           ) : (
             <div className="text-center py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
               <p className="text-lg text-muted-foreground">

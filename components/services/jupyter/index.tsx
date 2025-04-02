@@ -5,8 +5,10 @@ import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../lib/api';
 import { Deployment, ServiceType } from '../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function JupyterPage() {
+  const { user } = useAuth();
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export default function JupyterPage() {
       setIsLoading(true);
       setError(null);
     //   NOTE: REPLACE THIS
-      const data = await api.getUserDeployments(5, ServiceType.JUPYTER); // Replace with actual user ID
+      const data = await api.getUserDeployments(user!.id, ServiceType.JUPYTER); // Replace with actual user ID
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);
     } catch (err) {

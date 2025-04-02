@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
 import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
@@ -13,13 +13,8 @@ export default function JupyterPage() {
   const [error, setError] = useState<string | null>(null);
   const { user, isLoading: authLoading } = useAuth();
 
-  useEffect(() => {
-    if (!authLoading) {
-      fetchDeployments();
-    }
-  }, [authLoading]);
 
-  const fetchDeployments = async () => {
+  const fetchDeployments = useCallback(async () => {
     if (!user?.id) {
       setError('Please sign in to view deployments');
       setIsLoading(false);
@@ -30,7 +25,7 @@ export default function JupyterPage() {
       setIsLoading(true);
       setError(null);
       const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto';
-      const data = await api.getUserDeployments(parseInt(user.id), ServiceType.JUPYTER, envProvider);
+      const data = await api.getUserDeployments(user.id, ServiceType.JUPYTER, envProvider);
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -39,7 +34,14 @@ export default function JupyterPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchDeployments();
+    }
+  }, [authLoading, fetchDeployments]);
+
   const isDeploymentActive = (createdAt: string, duration: string): boolean => {
     const createdAtDate = new Date(createdAt);
     let durationSeconds = 0;

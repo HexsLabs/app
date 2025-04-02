@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
 
 interface DeploymentFormProps {
-  userId: number;
+  userId: string;
 }
 
 export function DeploymentForm({ userId }: DeploymentFormProps) {
