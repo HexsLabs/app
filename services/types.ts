@@ -22,6 +22,11 @@ export interface DeployDefaultBackendRequest {
     env?: Record<string, string>;
     config: {
         appPort: number;
+        deploymentDuration?: string;
+        appCpuUnits?: number;
+        appMemorySize?: string;
+        appStorageSize?: string;
+        runCommands?: string;
     };
     provider?: ProviderType;
 }
@@ -44,6 +49,7 @@ export interface DeploymentConfig {
     appMemorySize: string;
     appStorageSize: string;
     image?: string | null;
+    runCommands?: string;
 }
 
 export interface EnvironmentVars {

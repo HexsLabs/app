@@ -11,6 +11,7 @@ import { Info, Loader2 } from 'lucide-react';
 import { DeploymentForm } from '@/components/DeploymentForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/lib/auth/AuthContext';
+import Link from "next/link";
 
 interface SliderProps {
   value: number;
@@ -104,18 +105,12 @@ const SDLBuilder: React.FC = () => {
       </div>
 
       <Tabs defaultValue="quick" className="w-full mb-8">
-        {/* <TabsList className="mb-6 bg-secondary">
-          <TabsTrigger value="quick" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-            Quick Deployment
-          </TabsTrigger>
-          <TabsTrigger value="advanced" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-            Advanced Deployment
-          </TabsTrigger>
-        </TabsList> */}
-        
         <TabsContent value="quick" className="gradient-border card-shadow">
           <div className="gradient-bg p-8 rounded-3xl">
-            <h2 className="text-2xl font-semibold mb-6">Create Quick Deployment</h2>
+            <h2 className="text-2xl font-semibold mb-6">Custom Deployment Configuration</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Configure your own custom deployment using the form below
+            </p>
             {renderAuthContent(
               <DeploymentForm userId={parseInt(user!.id)} />
             )}
