@@ -1,4 +1,4 @@
-import { apiService } from '../services/apiService';
+import { apiService } from "../services/apiService";
 import {
   DeploymentConfig,
   EnvironmentVars,
@@ -12,7 +12,7 @@ import {
   GetDeploymentsRequest,
   GetDeploymentsResponse,
   ProviderType,
-} from '../services/types';
+} from "../services/types";
 
 // Re-export types
 export type {
@@ -34,11 +34,23 @@ export type {
 export const api = apiService;
 
 // For backward compatibility with any code using the old function-based API
-export const getDeployments = (userId: number, provider?: ProviderType) => apiService.getUserDeployments(userId, undefined, provider);
-export const getDeploymentById = (deploymentId: number) => apiService.getDeploymentById(deploymentId);
-export const getServiceInstances = (type: string) => apiService.getServiceInstances(type);
-export const closeDeployment = (deploymentId: number) => apiService.closeDeployment(deploymentId);
-export const getUserDeploymentsByType = (userId: number, type: string, provider?: ProviderType) => 
-  apiService.getUserDeploymentsByType(userId, type, provider);
-export const createDeployment = (userId: number, repoUrl: string, branchName: string, config: DeploymentConfig, env: EnvironmentVars) => 
-  apiService.createDeployment(userId, repoUrl, branchName, config, env); 
+export const getDeployments = (userId: string, provider?: ProviderType) =>
+  apiService.getUserDeployments(userId, undefined, provider);
+export const getDeploymentById = (deploymentId: number) =>
+  apiService.getDeploymentById(deploymentId);
+export const getServiceInstances = (type: string) =>
+  apiService.getServiceInstances(type);
+export const closeDeployment = (deploymentId: number) =>
+  apiService.closeDeployment(deploymentId);
+export const getUserDeploymentsByType = (
+  userId: string,
+  type: string,
+  provider?: ProviderType
+) => apiService.getUserDeploymentsByType(userId, type, provider);
+export const createDeployment = (
+  userId: string,
+  repoUrl: string,
+  branchName: string,
+  config: DeploymentConfig,
+  env: EnvironmentVars
+) => apiService.createDeployment(userId, repoUrl, branchName, config, env);

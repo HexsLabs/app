@@ -125,7 +125,7 @@ class ApiService {
 
   // Create a new deployment
   async createDeployment(
-    user: number,
+    user: string,
     repoUrl: string,
     branchName: string,
     config: DeploymentConfig,
@@ -147,7 +147,7 @@ class ApiService {
 
   // Deployment Services
   async getUserDeployments(
-    user: number,
+    user: string,
     type?: ServiceType,
     provider?: ProviderType
   ): Promise<Deployment[]> {
@@ -186,7 +186,7 @@ class ApiService {
 
   // Get user deployments by type
   async getUserDeploymentsByType(
-    userId: number,
+    userId: string,
     type: string,
     provider?: ProviderType
   ): Promise<Deployment[]> {

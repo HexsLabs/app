@@ -22,7 +22,7 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { AuthProvider } from "@/lib/auth/AuthContext";
-
+import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 const wagmiConfig = getDefaultConfig({
@@ -99,6 +99,7 @@ export default function RootLayout({
               </main>
             </div>
           </DesktopOnly>
+          <Toaster />
         </Providers>
       </body>
     </html>
