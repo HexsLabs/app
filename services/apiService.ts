@@ -131,10 +131,9 @@ class ApiService {
     config: DeploymentConfig,
     env: EnvironmentVars
   ): Promise<Deployment> {
-    return this.request<Deployment>("/api/deployments/create", {
+    return this.request<Deployment>("/api/services/backend/deploy/custom", {
       method: "POST",
       body: JSON.stringify({
-        user,
         repoUrl,
         branchName,
         config,
