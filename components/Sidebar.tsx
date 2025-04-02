@@ -88,6 +88,25 @@ export const Sidebar = ({ isMobileOpen }: SidebarProps) => {
               ? "text-primary bg-primary/10"
               : "text-muted-foreground"
           } hover:text-primary hover:bg-primary/10 py-4 rounded-xl group`}
+          onClick={() => router.push("/app/templates")}
+        >
+          <Sparkles
+            size={20}
+            className={`${
+              pathname?.includes("/app/templates")
+                ? "text-primary"
+                : "text-muted-foreground"
+            } group-hover:text-primary transition-colors`}
+          />
+          <span>Templates</span>
+        </Button>
+        {/* <Button
+          variant="ghost"
+          className={`w-full justify-start gap-3 ${
+            pathname?.includes("/app/chatbot")
+              ? "text-primary bg-primary/10"
+              : "text-muted-foreground"
+          } hover:text-primary hover:bg-primary/10 py-4 rounded-xl group`}
           onClick={() => router.push("/app/chatbot")}
         >
           <Sparkles
