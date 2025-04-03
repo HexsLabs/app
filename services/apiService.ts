@@ -1,3 +1,4 @@
+import { getProviderFromEnv } from "@/lib/utils";
 import {
   DeployCustomBackendRequest,
   DeployDefaultBackendRequest,
@@ -12,8 +13,6 @@ import {
   DeploymentConfig,
   ProviderType,
 } from "./types";
-
-// console.log("provider to use", process.env.NEXT_PUBLIC_PROVIDER_TO_USE);
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3080";
 
 // User response interface
@@ -138,8 +137,7 @@ class ApiService {
         branchName,
         config,
         env,
-        provider:
-          (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || "auto",
+        provider: getProviderFromEnv(),
       }),
     });
   }

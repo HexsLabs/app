@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiService } from '@/services/apiService';
-import { DeployCustomBackendRequest, ProviderType } from '@/services/types';
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from '@/lib/auth/AuthContext';
+import { getProviderFromEnv } from "@/lib/utils";
 
-const ExpressCalculatorTemplate = () => {
+const StreamlitCalculatorTemplate = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const from = searchParams.get('from') || '/app/templates';
     const { toast } = useToast();
     const { user, isLoading } = useAuth();
+    const [isDeploying, setIsDeploying] = React.useState(false);
 
     const handleBack = () => {
         router.push(from);
@@ -22,12 +23,13 @@ const ExpressCalculatorTemplate = () => {
 
     const templateDetails = {
         "Repository URL": "https://github.com/Aquanodeio/templates.git",
-        "Branch Name": "js-calculator-server",
-        "App Port": "3000",
+        "Branch Name": "streamlit-example",
+        "Run Commands": "pip3 install -r requirements.txt && streamlit run main.py",
+        "App Port": "8501",
         "Deployment Duration": "1h",
         "CPU Units": "0.5",
         "Memory Size": "1Gi",
-        "Storage Size": "2Gi",
+        "Storage Size": "3Gi",
     };
 
     const handleDeploy = async () => {
@@ -40,6 +42,7 @@ const ExpressCalculatorTemplate = () => {
             return;
         }
 
+        setIsDeploying(true);
         try {
             const data = {
                 userId: parseInt(user.id),
@@ -52,20 +55,22 @@ const ExpressCalculatorTemplate = () => {
                     appCpuUnits: Number(templateDetails["CPU Units"]),
                     appMemorySize: templateDetails["Memory Size"],
                     appStorageSize: templateDetails["Storage Size"],
-                    runCommands: "",
+                    runCommands: templateDetails["Run Commands"],
                 },
-                provider: "auto" as ProviderType,
+                provider: getProviderFromEnv(),
             };
+
+            console.log("Deploying Streamlit template with run commands:", templateDetails["Run Commands"]);
 
             const response = await apiService.deployDefaultBackend(data);
             
             toast({
                 title: "Success",
-                description: "Express.js Calculator template deployed successfully!",
+                description: "Streamlit Calculator template deployed successfully!",
                 variant: "default",
             });
 
-            // Navigate to deployments page to see the new deployment
+            // Navigate to dashboard page to see the new deployment
             router.push("/app/dashboard");
         } catch (error) {
             console.error("Error deploying template:", error);
@@ -74,6 +79,8 @@ const ExpressCalculatorTemplate = () => {
                 description: "Failed to deploy template. Please try again.",
                 variant: "destructive",
             });
+        } finally {
+            setIsDeploying(false);
         }
     };
 
@@ -87,7 +94,7 @@ const ExpressCalculatorTemplate = () => {
             appCpuUnits: templateDetails["CPU Units"],
             appMemorySize: templateDetails["Memory Size"],
             appStorageSize: templateDetails["Storage Size"],
-            runCommands: "",
+            runCommands: templateDetails["Run Commands"],
         }));
 
         // Redirect to custom deployment page
@@ -108,10 +115,10 @@ const ExpressCalculatorTemplate = () => {
             </div>
             <div className="mb-8">
                 <h1 className="text-3xl font-bold mb-2 text-foreground">
-                    Express.js Calculator Template
+                    Streamlit Python Calculator Template
                 </h1>
                 <p className="text-muted-foreground">
-                    Express.js Server with HTML rendered frontend. Quickly deploy a simple web calculator application.
+                    Interactive calculator built with Python and Streamlit for a modern data-focused web interface.
                 </p>
             </div>
 
@@ -141,10 +148,18 @@ const ExpressCalculatorTemplate = () => {
                                 size="lg" 
                                 className="w-1/2" 
                                 onClick={handleDeploy}
-                                disabled={isLoading || !user?.id}
+                                disabled={isLoading || !user?.id || isDeploying}
                             >
-                                Deploy
-                                <ArrowRight className="ml-2 h-4 w-4" />
+                                {isDeploying ? (
+                                    <>
+                                        <span className="animate-pulse">Deploying...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Deploy
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>
@@ -154,4 +169,4 @@ const ExpressCalculatorTemplate = () => {
     );
 };
 
-export default ExpressCalculatorTemplate; 
+export default StreamlitCalculatorTemplate; 

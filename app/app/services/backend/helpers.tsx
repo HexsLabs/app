@@ -7,8 +7,8 @@ export const deploymentOptions: DeploymentOption[] = [
     description:
       "Quick deployment with preset configuration for most backend services",
     icon: <Server className="h-6 w-6 text-primary" />,
-    resources: ["0.5 CPU", "512Mi Memory", "1Gi Storage"],
-    recommended: true,
+    resources: ["0.5 CPU", "512Mi Memory", "1Gi Storage", "1H Duration"],
+    free: true,
   },
   {
     title: "Custom Deployment",

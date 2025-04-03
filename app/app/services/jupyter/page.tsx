@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
-import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
+import { Deployment, ServiceType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { getProviderFromEnv } from '@/lib/utils';
 
 export default function JupyterPage() {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
@@ -24,7 +25,7 @@ export default function JupyterPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto';
+      const envProvider = getProviderFromEnv();
       const data = await api.getUserDeployments(user.id, ServiceType.JUPYTER, envProvider);
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);
@@ -192,7 +193,7 @@ export default function JupyterPage() {
               </div>
             </div>
 
-            {/* Resource Limits */}
+            {/* Resource Limits
             <div className="bg-zinc-800/50 rounded-lg p-6">
               <h3 className="text-lg font-medium text-white mb-4">Resource Limits</h3>
               <div className="space-y-4">
@@ -221,7 +222,7 @@ export default function JupyterPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Recent Activity */}
             <div className="bg-zinc-800/50 rounded-lg p-6">

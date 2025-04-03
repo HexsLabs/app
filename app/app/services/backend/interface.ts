@@ -5,7 +5,7 @@ export interface DeploymentOption {
   description: string;
   icon: React.ReactNode;
   resources: string[];
-  recommended?: boolean;
+  free?: boolean;
 }
 
 export interface ResourceValueOptions {

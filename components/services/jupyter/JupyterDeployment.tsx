@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { api } from '../../../lib/api';
 import { DeployCustomJupyterRequest, ProviderType } from '../../../services/types';
 import { useAuth } from '@/lib/auth/AuthContext';
-
+import { getProviderFromEnv } from '@/lib/utils';
 interface JupyterDeploymentProps {
   onDeploymentComplete?: () => void;
 }
@@ -12,7 +12,7 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<ProviderType>(
-    (process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType) || 'auto'
+    getProviderFromEnv()
   );
   const { user } = useAuth();
 
@@ -95,6 +95,8 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
     }
   };
 
+  const defaultProvider = getProviderFromEnv()
+
   return (
     <div className="space-y-6 p-6 bg-zinc-800/50 rounded-lg">
       <div>
@@ -106,9 +108,9 @@ export default function JupyterDeployment({ onDeploymentComplete }: JupyterDeplo
             onChange={(e) => setSelectedProvider(e.target.value as ProviderType)}
             className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            {process.env.NEXT_PUBLIC_PROVIDER_TO_USE ? (
-              <option value={process.env.NEXT_PUBLIC_PROVIDER_TO_USE}>
-                {process.env.NEXT_PUBLIC_PROVIDER_TO_USE.charAt(0).toUpperCase() + process.env.NEXT_PUBLIC_PROVIDER_TO_USE.slice(1)} Network
+            {defaultProvider ? (
+              <option value={defaultProvider}>
+                {defaultProvider.charAt(0).toUpperCase() + defaultProvider.slice(1)} Network
               </option>
             ) : (
               <>
