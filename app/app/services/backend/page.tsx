@@ -223,7 +223,7 @@ const SDLBuilder: React.FC = () => {
         <Button
           size="lg"
           className="btn-primary shadow-lg shadow-primary/10 hover-effect"
-          disabled={!loading}
+          disabled={loading}
           onClick={handleSubmit}
         >
           <span>Deploy Backend</span>
