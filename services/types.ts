@@ -1,11 +1,9 @@
 // Jupyter Service Types
 export interface DeployDefaultJupyterRequest {
-  userId: string;
   provider?: ProviderType;
 }
 
 export interface DeployCustomJupyterRequest {
-  userId: string;
   cpuUnits: number;
   memorySize: string;
   storageSize: string;
