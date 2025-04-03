@@ -2,92 +2,135 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Paperclip, ArrowUp, Bot, User } from "lucide-react";
-import React from "react";
-
-interface Message {
-  text: string;
-  sender: "user" | "bot";
-}
+import { apiService } from "@/services/apiService";
+import { ChatMessage } from "@/services/types";
+import { useToast } from "@/components/ui/use-toast";
 
 const ChatInterface = () => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      text: "Hello! I'm your AI assistant. How can I help you deploy your application today?",
-      sender: "bot",
+      role: "assistant",
+      content: "Hello! I'm your AI assistant. How can I help you deploy your application today?",
+      timestamp: new Date().toISOString(),
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadChatHistory();
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const loadChatHistory = async () => {
+    try {
+      const history = await apiService.getChatHistory();
+      if (history.length > 0) {
+        setMessages(history);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load chat history",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handlePaperclipClick = () => {
     fileInputRef.current?.click();
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Handle file upload logic
     const files = event.target.files;
     if (files && files.length > 0) {
-      setMessages([
-        ...messages,
-        {
-          text: `File attached: ${files[0].name}`,
-          sender: "user",
-        },
-      ]);
-
-      // Simulate bot response
-      setTimeout(() => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            text: `I've received your file "${files[0].name}". What would you like to do with it?`,
-            sender: "bot",
-          },
-        ]);
-      }, 1000);
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: `File attached: ${files[0].name}`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, userMessage]);
+      // TODO: Implement file upload functionality
+      toast({
+        title: "File Upload",
+        description: "File upload functionality coming soon!",
+      });
     }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       sendPrompt();
     }
   };
 
-  const sendPrompt = () => {
-    if (!input.trim()) return;
+  const sendPrompt = async () => {
+    if (!input.trim() || isLoading) return;
 
-    setMessages([...messages, { text: input, sender: "user" }]);
+    const userMessage: ChatMessage = {
+      role: "user",
+      content: input.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
 
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponses = [
-        "I'm analyzing your request...",
-        "That's a great question! Let me help you with that.",
-        "I can help you deploy that. Would you like to use a template?",
-        "Let me guide you through the process of setting that up.",
-        "I understand what you're looking for. Let's get started!",
-      ];
-
-      const randomResponse =
-        botResponses[Math.floor(Math.random() * botResponses.length)];
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
+    // Create a temporary assistant message that will be updated
+    const tempAssistantMessage: ChatMessage = {
+      role: "assistant",
+      content: "",
+      timestamp: new Date().toISOString(),
+    };
+    
+    // Add the assistant message to the state
+    setMessages(prev => [...prev, tempAssistantMessage]);
+    
+    try {
+      // Create a local reference to track content to avoid state closure issues
+      let currentContent = "";
+      
+      await apiService.sendChatMessage(
         {
-          text: randomResponse,
-          sender: "bot",
+          messages: [...messages, userMessage],
         },
-      ]);
-    }, 1000);
+        (chunk) => {
+          // Accumulate content locally to avoid state closure issues
+          currentContent += chunk;
+          
+          // Update the last message with the complete content so far
+          setMessages(prev => {
+            const newMessages = [...prev];
+            const lastMessage = newMessages[newMessages.length - 1];
+            if (lastMessage.role === "assistant") {
+              // Replace the content entirely instead of appending
+              lastMessage.content = currentContent;
+            }
+            return newMessages;
+          });
+        }
+      );
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+      });
+      
+      // Remove the assistant message if there was an error
+      setMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  // Auto scroll to the bottom of messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   return (
     <div className="flex flex-col h-full">
@@ -108,10 +151,10 @@ const ChatInterface = () => {
               <div
                 key={index}
                 className={`flex items-start gap-3 ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {message.sender === "bot" && (
+                {message.role === "assistant" && (
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                     <Bot size={16} />
                   </div>
@@ -119,15 +162,18 @@ const ChatInterface = () => {
 
                 <div
                   className={`p-3 rounded-xl max-w-[80%] ${
-                    message.sender === "user"
+                    message.role === "user"
                       ? "bg-primary/10 text-foreground"
                       : "bg-secondary/20 text-foreground"
                   }`}
                 >
-                  <p className="text-sm">{message.text}</p>
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <span className="text-xs opacity-70 mt-1 block">
+                    {new Date(message.timestamp || "").toLocaleTimeString()}
+                  </span>
                 </div>
 
-                {message.sender === "user" && (
+                {message.role === "user" && (
                   <div className="w-8 h-8 rounded-full bg-secondary/40 flex items-center justify-center text-foreground/80">
                     <User size={16} />
                   </div>
@@ -152,6 +198,7 @@ const ChatInterface = () => {
               <button
                 onClick={handlePaperclipClick}
                 className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors"
+                disabled={isLoading}
               >
                 <Paperclip className="w-5 h-5" />
               </button>
@@ -163,17 +210,18 @@ const ChatInterface = () => {
                   onKeyDown={handleKeyPress}
                   placeholder="Ask me anything..."
                   className="w-full bg-transparent text-foreground focus:outline-none placeholder-muted-foreground py-2 px-1 rounded-md"
+                  disabled={isLoading}
                 />
               </div>
 
               <button
                 onClick={sendPrompt}
                 className={`p-2 rounded-lg transition-all duration-300 ${
-                  input.trim()
+                  input.trim() && !isLoading
                     ? "bg-primary text-white hover:bg-primary/90"
                     : "text-muted-foreground bg-secondary/30 cursor-not-allowed"
                 }`}
-                disabled={!input.trim()}
+                disabled={!input.trim() || isLoading}
               >
                 <ArrowUp className="w-5 h-5" />
               </button>
