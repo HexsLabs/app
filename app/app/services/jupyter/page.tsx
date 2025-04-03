@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import JupyterDeployment from '@/components/services/jupyter/JupyterDeployment';
 import { api } from '../../../../lib/api';
-import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
+import { Deployment, ServiceType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { getProviderFromEnv } from '@/lib/utils';

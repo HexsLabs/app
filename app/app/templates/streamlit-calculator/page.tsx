@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiService } from '@/services/apiService';
-import { DeployCustomBackendRequest, ProviderType } from '@/services/types';
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from '@/lib/auth/AuthContext';
+import { getProviderFromEnv } from "@/lib/utils";
 
 const StreamlitCalculatorTemplate = () => {
     const router = useRouter();
@@ -15,6 +15,7 @@ const StreamlitCalculatorTemplate = () => {
     const from = searchParams.get('from') || '/app/templates';
     const { toast } = useToast();
     const { user, isLoading } = useAuth();
+    const [isDeploying, setIsDeploying] = React.useState(false);
 
     const handleBack = () => {
         router.push(from);
@@ -41,6 +42,7 @@ const StreamlitCalculatorTemplate = () => {
             return;
         }
 
+        setIsDeploying(true);
         try {
             const data = {
                 userId: parseInt(user.id),
@@ -55,7 +57,7 @@ const StreamlitCalculatorTemplate = () => {
                     appStorageSize: templateDetails["Storage Size"],
                     runCommands: templateDetails["Run Commands"],
                 },
-                provider: "auto" as ProviderType,
+                provider: getProviderFromEnv(),
             };
 
             console.log("Deploying Streamlit template with run commands:", templateDetails["Run Commands"]);
@@ -77,6 +79,8 @@ const StreamlitCalculatorTemplate = () => {
                 description: "Failed to deploy template. Please try again.",
                 variant: "destructive",
             });
+        } finally {
+            setIsDeploying(false);
         }
     };
 
@@ -144,10 +148,18 @@ const StreamlitCalculatorTemplate = () => {
                                 size="lg" 
                                 className="w-1/2" 
                                 onClick={handleDeploy}
-                                disabled={isLoading || !user?.id}
+                                disabled={isLoading || !user?.id || isDeploying}
                             >
-                                Deploy
-                                <ArrowRight className="ml-2 h-4 w-4" />
+                                {isDeploying ? (
+                                    <>
+                                        <span className="animate-pulse">Deploying...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Deploy
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>

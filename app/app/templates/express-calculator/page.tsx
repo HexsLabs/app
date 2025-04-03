@@ -15,6 +15,7 @@ const ExpressCalculatorTemplate = () => {
     const from = searchParams.get('from') || '/app/templates';
     const { toast } = useToast();
     const { user, isLoading } = useAuth();
+    const [isDeploying, setIsDeploying] = React.useState(false);
 
     const handleBack = () => {
         router.push(from);
@@ -40,6 +41,7 @@ const ExpressCalculatorTemplate = () => {
             return;
         }
 
+        setIsDeploying(true);
         try {
             const data = {
                 userId: parseInt(user.id),
@@ -74,6 +76,8 @@ const ExpressCalculatorTemplate = () => {
                 description: "Failed to deploy template. Please try again.",
                 variant: "destructive",
             });
+        } finally {
+            setIsDeploying(false);
         }
     };
 
@@ -141,10 +145,18 @@ const ExpressCalculatorTemplate = () => {
                                 size="lg" 
                                 className="w-1/2" 
                                 onClick={handleDeploy}
-                                disabled={isLoading || !user?.id}
+                                disabled={isLoading || !user?.id || isDeploying}
                             >
-                                Deploy
-                                <ArrowRight className="ml-2 h-4 w-4" />
+                                {isDeploying ? (
+                                    <>
+                                        <span className="animate-pulse">Deploying...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Deploy
+                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>

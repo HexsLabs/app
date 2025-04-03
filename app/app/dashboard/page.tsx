@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { getDeployments } from "../../../lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
-import { ProviderType } from "../../../services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 
@@ -80,7 +79,7 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
         <div className="text-center py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
           <p className="text-lg text-muted-foreground">
             {envProvider
-              ? `No active deployments found for provider: ${envProvider}`
+              ? <> No active deployments found for provider: <span className="capitalize">{envProvider}</span></>
               : "No active deployments found"}
           </p>
           <p className="mt-2 text-sm text-muted-foreground/70">
