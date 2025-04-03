@@ -139,7 +139,7 @@ export const Sidebar = ({ isMobileOpen }: SidebarProps) => {
 
       <div className="mt-auto pt-6 border-t border-border/30 text-muted-foreground/70 text-sm flex items-center">
         <a
-          href="https://github.com/aquanode"
+          href="https://github.com/Aquanodeio"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 hover:text-primary transition-colors px-2 py-1"

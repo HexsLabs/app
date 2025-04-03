@@ -6,6 +6,7 @@ import { api } from '../../../../lib/api';
 import { Deployment, ServiceType, ProviderType } from '../../../../services/types';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { getProviderFromEnv } from '@/lib/utils';
 
 export default function JupyterPage() {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
@@ -24,7 +25,7 @@ export default function JupyterPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as ProviderType || 'auto';
+      const envProvider = getProviderFromEnv();
       const data = await api.getUserDeployments(user.id, ServiceType.JUPYTER, envProvider);
       // Ensure data is an array before setting it
       setDeployments(Array.isArray(data) ? data : []);

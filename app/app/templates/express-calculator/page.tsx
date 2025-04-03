@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { apiService } from '@/services/apiService';
-import { DeployCustomBackendRequest, ProviderType } from '@/services/types';
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from '@/lib/auth/AuthContext';
+import { getProviderFromEnv } from "@/lib/utils";
 
 const ExpressCalculatorTemplate = () => {
     const router = useRouter();
@@ -54,7 +54,7 @@ const ExpressCalculatorTemplate = () => {
                     appStorageSize: templateDetails["Storage Size"],
                     runCommands: "",
                 },
-                provider: "auto" as ProviderType,
+                provider: getProviderFromEnv(),
             };
 
             const response = await apiService.deployDefaultBackend(data);

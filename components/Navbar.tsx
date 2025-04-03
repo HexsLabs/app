@@ -66,14 +66,6 @@ export default function Navbar({
           </Link>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/app/dashboard" className="hidden sm:block">
-            <Button
-              variant="outline"
-              className="text-foreground border-border/40 hover:border-primary/30 hover:bg-primary/5"
-            >
-              Launch App
-            </Button>
-          </Link>
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

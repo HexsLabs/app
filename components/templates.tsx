@@ -23,7 +23,7 @@ export const templates: Template[] = [
     name: "Express.js Server",
     description:
       "Express.js Server with HTML rendered frontend. A simple web server with a calculator interface rendered directly from the backend.",
-    url: "/app/templates/backend/express-calculator?from=/app/templates",
+    url: "/app/templates/express-calculator?from=/app/templates",
     details: {
       repoUrl: "https://github.com/Aquanodeio/templates.git",
       branchName: "js-calculator-server",
@@ -37,7 +37,7 @@ export const templates: Template[] = [
     name: "Streamlit Python Calculator",
     description:
       "Streamlit Python calculator example. Interactive calculator built with Python and Streamlit for a modern data-focused web interface.",
-    url: "/app/templates/backend/streamlit-calculator?from=/app/templates",
+    url: "/app/templates/streamlit-calculator?from=/app/templates",
     details: {
       repoUrl: "https://github.com/Aquanodeio/templates.git",
       branchName: "streamlit-example",

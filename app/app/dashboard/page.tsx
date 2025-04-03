@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { ProviderType } from "../../../services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { getProviderFromEnv } from "@/lib/utils";
 
 interface Deployment {
   deploymentId: string;
@@ -26,14 +27,11 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
   const { toast } = useToast();
 
   // Get the provider from environment variable
-  const envProvider = process.env.NEXT_PUBLIC_PROVIDER_TO_USE as
-    | ProviderType
-    | undefined;
+  const envProvider = getProviderFromEnv();
 
   useEffect(() => {
     const fetchDeployments = async () => {
       try {
-        // If NEXT_PUBLIC_PROVIDER_TO_USE is set, only show deployments from that provider
         const response = await getDeployments(userId, envProvider);
         setDeployments(
           response?.map((deployment) => ({
