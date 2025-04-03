@@ -193,7 +193,7 @@ export default function JupyterPage() {
               </div>
             </div>
 
-            {/* Resource Limits */}
+            {/* Resource Limits
             <div className="bg-zinc-800/50 rounded-lg p-6">
               <h3 className="text-lg font-medium text-white mb-4">Resource Limits</h3>
               <div className="space-y-4">
@@ -222,7 +222,7 @@ export default function JupyterPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Recent Activity */}
             <div className="bg-zinc-800/50 rounded-lg p-6">
