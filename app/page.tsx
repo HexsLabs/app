@@ -12,7 +12,7 @@ import {
   LineChart,
   ArrowDown,
 } from "lucide-react";
-
+import { useRouter } from "next/navigation";
 // Add type declaration for particlesJS
 declare global {
   interface Window {
@@ -23,6 +23,7 @@ declare global {
 export default function LandingPage() {
   const [scrollY, setScrollY] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const router = useRouter();
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -161,7 +162,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center max-w-5xl mx-auto"
+          className="text-center max-w-5xl mx-auto relative z-1000"
         >
           <div className="inline-block mb-4 md:mb-6 px-4 md:px-6 py-1.5 md:py-2 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-full border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.3)]">
             <span className="text-xs md:text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center">
@@ -236,13 +237,16 @@ export default function LandingPage() {
           </div> */}
 
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center mb-10"
+            className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center mb-10 relative z-[100]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
             <Link href="/app/dashboard">
-              <Button className="relative overflow-hidden group w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white px-6 md:px-8 py-4 md:py-6 text-base md:text-lg rounded-xl shadow-[0_5px_15px_rgba(79,70,229,0.4)]">
+              <Button
+                onClick={() => router.push("/app/dashboard")}
+                className="relative overflow-hidden group w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white px-6 md:px-8 py-4 md:py-6 text-base md:text-lg rounded-xl shadow-[0_5px_15px_rgba(79,70,229,0.4)]"
+              >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <span className="relative flex items-center justify-center">
                   Get Started
