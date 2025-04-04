@@ -35,20 +35,22 @@ const ExpressCalculatorTemplate = () => {
   });
 
   return (
-    <TemplateContainer>
-      <TemplateHeader
-        title="Express.js Calculator Template"
-        description="Express.js Server with HTML rendered frontend. Quickly deploy a simple web calculator application."
-        onBackClick={handleBack}
-      />
+    <div>
+      <TemplateContainer>
+        <TemplateHeader
+          title="Express.js Calculator Template"
+          description="Express.js Server with HTML rendered frontend. Quickly deploy a simple web calculator application."
+          onBackClick={handleBack}
+        />
 
-      <TemplateDetailsCard
-        templateDetails={templateDetails}
-        isDeploying={isDeploying}
-        onDeploy={handleDeploy}
-        disabled={isButtonDisabled}
-      />
-    </TemplateContainer>
+        <TemplateDetailsCard
+          templateDetails={templateDetails}
+          isDeploying={isDeploying}
+          onDeploy={handleDeploy}
+          disabled={isButtonDisabled}
+        />
+      </TemplateContainer>
+    </div>
   );
 };
 

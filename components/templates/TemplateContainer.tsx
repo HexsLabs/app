@@ -7,5 +7,9 @@ interface TemplateContainerProps {
 export default function TemplateContainer({
   children,
 }: TemplateContainerProps) {
-  return <div className="container mx-auto px-16 py-6 ">{children}</div>;
+  return (
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      {children}
+    </div>
+  );
 }

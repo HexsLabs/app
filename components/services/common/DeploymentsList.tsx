@@ -63,18 +63,19 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 w-full">
       {deployments.map((deployment) => (
         <div
           key={deployment.deploymentId}
-          className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+          className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full overflow-hidden"
         >
-          <div className="space-y-3 flex-grow">
-            <div className="flex items-center gap-2">
+          <div className="space-y-3 flex-grow min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted-foreground text-sm">ID:</span>
               <Link
                 href={`/app/deployments/${deployment.deploymentId}`}
-                className="text-foreground hover:text-primary hover:underline font-medium"
+                className="text-foreground hover:text-primary hover:underline font-medium truncate max-w-[180px] sm:max-w-[240px]"
+                title={deployment.deploymentId}
               >
                 {deployment.deploymentId}
               </Link>
@@ -91,34 +92,34 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
               </span>
             </div>
             {deployment.appUrl && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-muted-foreground text-sm">URL:</span>
                 <a
                   href={deployment.appUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground hover:text-primary hover:underline truncate max-w-md"
+                  className="text-foreground hover:text-primary hover:underline truncate max-w-[180px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-md"
                   title={deployment.appUrl}
                 >
                   {deployment.appUrl}
                 </a>
               </div>
             )}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted-foreground text-sm">Created:</span>
               <span className="text-muted-foreground/90">
                 {formatDistanceToNow(new Date(deployment.createdAt))} ago
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted-foreground text-sm">Resources:</span>
-              <span className="text-muted-foreground/90">
+              <span className="text-muted-foreground/90 break-all sm:break-normal">
                 {deployment.cpu} CPU | {deployment.memory} RAM |{" "}
                 {deployment.storage} Storage
               </span>
             </div>
           </div>
-          <div className="flex gap-3 self-end md:self-center">
+          <div className="flex flex-wrap gap-3 self-end md:self-center mt-2 md:mt-0">
             {deployment.appUrl &&
               isDeploymentActive(deployment.createdAt, deployment.duration) && (
                 <a
@@ -129,8 +130,12 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
                   }
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="w-full sm:w-auto"
                 >
-                  <Button size="sm" className="hover-effect px-5">
+                  <Button
+                    size="sm"
+                    className="hover-effect px-5 w-full sm:w-auto"
+                  >
                     Open {serviceName === "JUPYTER" ? "Notebook" : "App"}
                   </Button>
                 </a>
@@ -138,7 +143,7 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
             <Button
               variant="outline"
               size="sm"
-              className="hover-effect text-destructive hover:text-destructive px-5"
+              className="hover-effect text-destructive hover:text-destructive px-5 w-full sm:w-auto"
               onClick={() => onDelete && onDelete(deployment.deploymentId)}
             >
               Delete

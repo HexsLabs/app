@@ -36,20 +36,22 @@ const StreamlitCalculatorTemplate = () => {
   });
 
   return (
-    <TemplateContainer>
-      <TemplateHeader
-        title="Streamlit Python Calculator Template"
-        description="Interactive calculator built with Python and Streamlit for a modern data-focused web interface."
-        onBackClick={handleBack}
-      />
+    <div>
+      <TemplateContainer>
+        <TemplateHeader
+          title="Streamlit Python Calculator Template"
+          description="Interactive calculator built with Python and Streamlit for a modern data-focused web interface."
+          onBackClick={handleBack}
+        />
 
-      <TemplateDetailsCard
-        templateDetails={templateDetails}
-        isDeploying={isDeploying}
-        onDeploy={handleDeploy}
-        disabled={isButtonDisabled}
-      />
-    </TemplateContainer>
+        <TemplateDetailsCard
+          templateDetails={templateDetails}
+          isDeploying={isDeploying}
+          onDeploy={handleDeploy}
+          disabled={isButtonDisabled}
+        />
+      </TemplateContainer>
+    </div>
   );
 };
 

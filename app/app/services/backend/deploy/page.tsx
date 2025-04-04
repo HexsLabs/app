@@ -123,17 +123,21 @@ export default function BackendPage() {
   const renderAuthContent = (content: React.ReactNode) => {
     if (isLoading) {
       return (
-        <div className="p-8 flex flex-col items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin mb-4 text-primary" />
-          <p className="text-muted-foreground">Loading authentication...</p>
+        <div className="p-4 sm:p-8 flex flex-col items-center justify-center">
+          <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin mb-4 text-primary" />
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Loading authentication...
+          </p>
         </div>
       );
     }
 
     if (!user?.id) {
       return (
-        <div className="dashboard-card text-center py-12">
-          <p className="text-lg mb-4">Please sign in to create a deployment</p>
+        <div className="dashboard-card text-center py-8 sm:py-12">
+          <p className="text-base sm:text-lg mb-4">
+            Please sign in to create a deployment
+          </p>
           <Button variant="outline" className="hover-effect mt-2">
             Sign In
           </Button>
@@ -145,7 +149,7 @@ export default function BackendPage() {
   };
 
   const renderDeploymentOptions = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       {deploymentOptions.map((option, index) => (
         <div
           key={index}
@@ -156,37 +160,39 @@ export default function BackendPage() {
           }`}
           onClick={() => setSelectedOption(index === 0 ? "default" : "custom")}
         >
-          <div className="flex items-start gap-4">
-            <div className="rounded-full p-3 bg-secondary/30 text-primary">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="rounded-full p-2 sm:p-3 bg-secondary/30 text-primary">
               {option.icon}
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">{option.title}</h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-base sm:text-lg font-medium">
+                  {option.title}
+                </h3>
                 {option.free && (
                   <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                     free
                   </span>
                 )}
               </div>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                 {option.description}
               </p>
 
-              <div className="mt-4 space-y-1">
+              <div className="mt-3 sm:mt-4 space-y-1">
                 {option.resources.map((resource, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
+                    className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground"
                   >
-                    <Check size={14} className="text-primary" />
+                    <Check size={14} className="text-primary flex-shrink-0" />
                     <span>{resource}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="self-center">
+            <div className="self-center ml-1 sm:ml-0">
               <div
                 className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                   selectedOption === (index === 0 ? "default" : "custom")
@@ -206,7 +212,7 @@ export default function BackendPage() {
   );
 
   const renderStandardDeployment = () => (
-    <div className="dashboard-card subtle-glow mb-8">
+    <div className="dashboard-card subtle-glow mb-6 sm:mb-8">
       <SourceControlSection
         repoUrl={repoUrl}
         setRepoUrl={setRepoUrl}
@@ -223,20 +229,20 @@ export default function BackendPage() {
 
       <div className="flex justify-end mt-6">
         <Button
-          size="lg"
-          className="btn-primary shadow-lg shadow-primary/10 hover-effect"
+          size="default"
+          className="btn-primary shadow-lg shadow-primary/10 hover-effect w-full sm:w-auto"
           disabled={loading}
           onClick={handleSubmit}
         >
-          <span>Deploy Service</span>
-          <ArrowRight className="ml-2 h-5 w-5" />
+          <span>{loading ? "Deploying..." : "Deploy Service"}</span>
+          {!loading && <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />}
         </Button>
       </div>
     </div>
   );
 
   const renderCustomDeployment = () => (
-    <div className="dashboard-card subtle-glow mb-8">
+    <div className="dashboard-card subtle-glow mb-6 sm:mb-8">
       <Tabs defaultValue="basic" className="w-full">
         {/* <TabsList className="mb-6">
           <TabsTrigger value="basic">Basic Deployment</TabsTrigger>
@@ -244,7 +250,7 @@ export default function BackendPage() {
         </TabsList> */}
 
         <TabsContent value="basic">
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <ResourceSettingSection values={values} setValues={setValues} />
 
             <SourceControlSection
@@ -263,8 +269,8 @@ export default function BackendPage() {
 
             <div className="flex justify-end mt-6">
               <Button
-                size="lg"
-                className="btn-primary shadow-lg shadow-primary/10 hover-effect"
+                size="default"
+                className="btn-primary shadow-lg shadow-primary/10 hover-effect w-full sm:w-auto"
                 // disabled={!isJsonValid}
                 // disabled={true}
                 onClick={() => {
@@ -275,7 +281,7 @@ export default function BackendPage() {
                 }}
               >
                 <span>Deploy Service</span>
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
@@ -291,26 +297,30 @@ export default function BackendPage() {
   );
 
   return (
-    <div className="bg-background text-foreground py-8">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div className="bg-background text-foreground py-6 sm:py-8">
+      <div className="container mx-auto px-0 sm:px-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8 px-4 sm:px-0">
           <div>
-            <h1 className="section-title mb-2">Custom Service Deployment</h1>
-            <p className="text-muted-foreground">
+            <h1 className="section-title text-xl sm:text-2xl md:text-3xl mb-2">
+              Custom Service Deployment
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Deploy a custom service with your preferred configuration
             </p>
           </div>
         </div>
 
-        {renderAuthContent(
-          <div>
-            {renderDeploymentOptions()}
+        <div className="px-4 sm:px-0">
+          {renderAuthContent(
+            <div>
+              {renderDeploymentOptions()}
 
-            {selectedOption === "default"
-              ? renderStandardDeployment()
-              : renderCustomDeployment()}
-          </div>
-        )}
+              {selectedOption === "default"
+                ? renderStandardDeployment()
+                : renderCustomDeployment()}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
