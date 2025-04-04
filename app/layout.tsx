@@ -94,7 +94,7 @@ export default function RootLayout({
                 {pathname.startsWith("/app") ? (
                   <Layout>{children}</Layout>
                 ) : (
-                  <div className="container mx-auto">{children}</div>
+                  <div className="mx-auto">{children}</div>
                 )}
               </main>
             </div>

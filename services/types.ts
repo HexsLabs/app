@@ -1,11 +1,9 @@
 // Jupyter Service Types
 export interface DeployDefaultJupyterRequest {
-  userId: number;
   provider?: ProviderType;
 }
 
 export interface DeployCustomJupyterRequest {
-  userId: number;
   cpuUnits: number;
   memorySize: string;
   storageSize: string;
@@ -16,23 +14,23 @@ export interface DeployCustomJupyterRequest {
 
 // Backend Service Types
 export interface DeployDefaultBackendRequest {
-    userId: number;
-    repoUrl?: string;
-    branchName?: string;
-    env?: Record<string, string>;
-    config: {
-        appPort: number;
-        deploymentDuration?: string;
-        appCpuUnits?: number;
-        appMemorySize?: string;
-        appStorageSize?: string;
-        runCommands?: string;
-    };
-    provider?: ProviderType;
+  userId: string;
+  repoUrl?: string;
+  branchName?: string;
+  env?: Record<string, string>;
+  config: {
+    appPort: number;
+    deploymentDuration?: string;
+    appCpuUnits?: number;
+    appMemorySize?: string;
+    appStorageSize?: string;
+    runCommands?: string;
+  };
+  provider?: ProviderType;
 }
 
 export interface DeployCustomBackendRequest {
-  userId: number;
+  userId: string;
   repoUrl?: string;
   branchName?: string;
   env?: Record<string, string>;
@@ -42,14 +40,14 @@ export interface DeployCustomBackendRequest {
 
 // Common Services Types
 export interface DeploymentConfig {
-    appPort: number;
-    deploymentMode?: string;
-    deploymentDuration: string;
-    appCpuUnits: number;
-    appMemorySize: string;
-    appStorageSize: string;
-    image?: string | null;
-    runCommands?: string;
+  appPort: number;
+  deploymentMode?: string;
+  deploymentDuration: string;
+  appCpuUnits: number;
+  appMemorySize: string;
+  appStorageSize: string;
+  image?: string | null;
+  runCommands?: string;
 }
 
 export interface EnvironmentVars {
@@ -83,7 +81,7 @@ export interface Deployment {
 }
 
 export interface GetDeploymentsResponse {
-  userId: number;
+  userId: string;
   deployments: Deployment[];
 }
 

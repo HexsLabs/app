@@ -7,8 +7,9 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import ServicePage from "@/components/services/common/ServicePage";
+import { isDeploymentActive } from "@/lib/deployment/utils";
 
-export default function JupyterPage() {
+export default function BackendPage() {
   const router = useRouter();
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +29,7 @@ export default function JupyterPage() {
       const envProvider = getProviderFromEnv();
       const data = await api.getUserDeployments(
         user.id,
-        ServiceType.JUPYTER,
+        ServiceType.BACKEND,
         envProvider
       );
       // Ensure data is an array before setting it
@@ -49,24 +50,6 @@ export default function JupyterPage() {
     }
   }, [authLoading, fetchDeployments]);
 
-  const isDeploymentActive = (createdAt: string, duration: string): boolean => {
-    const createdAtDate = new Date(createdAt);
-    let durationSeconds = 0;
-
-    if (duration.endsWith("h")) {
-      durationSeconds = parseInt(duration) * 3600;
-    } else if (duration.endsWith("m")) {
-      durationSeconds = parseInt(duration) * 60;
-    } else if (duration.endsWith("s")) {
-      durationSeconds = parseInt(duration);
-    } else {
-      durationSeconds = parseInt(duration) || 0;
-    }
-    const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
-    const now = new Date();
-    return endTime.getTime() > now.getTime();
-  };
-
   // Calculate stats for active deployments only
   const activeDeployments = Array.isArray(deployments)
     ? deployments.filter(
@@ -79,7 +62,6 @@ export default function JupyterPage() {
     (acc, curr) => acc + curr.cpu,
     0
   );
-
   const currentRamUsageInMi = activeDeployments.reduce((acc, curr) => {
     const memory = curr.memory;
 
@@ -92,10 +74,10 @@ export default function JupyterPage() {
     }
   }, 0);
 
-  const currentRamUsage =
-    currentRamUsageInMi > 1024
-      ? (currentRamUsageInMi / 1024).toFixed(2) + " Gi"
-      : currentRamUsageInMi + " Mi";
+  let currentRamUsage = currentRamUsageInMi + " Mi";
+  if (currentRamUsageInMi > 1024) {
+    currentRamUsage = (currentRamUsageInMi / 1024).toFixed(2) + " Gi";
+  }
 
   const handleDelete = (deploymentId: string) => {
     // TODO: Implement delete deployment
@@ -104,9 +86,9 @@ export default function JupyterPage() {
 
   return (
     <ServicePage
-      title="Jupyter Notebook Deployment"
-      description="Deploy and manage your Jupyter notebook instances"
-      deployPath="/app/services/jupyter/deploy"
+      title="Custom Service Deployment"
+      description="Deploy and manage your custom service instances"
+      deployPath="/app/services/custom/deploy"
       user={user}
       isLoading={isLoading}
       authLoading={authLoading}
@@ -118,7 +100,7 @@ export default function JupyterPage() {
       totalDeployments={totalDeployments}
       currentCpuUsage={currentCpuUsage}
       currentRamUsage={currentRamUsage}
-      serviceName="JUPYTER"
+      serviceName="BACKEND"
       onDelete={handleDelete}
       router={router}
     />

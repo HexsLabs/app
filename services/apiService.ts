@@ -28,7 +28,6 @@ class ApiService {
   private accessToken: string | null = null;
 
   public setAccessToken(token: string | null) {
-    console.log("setting accessToken", token);
     this.accessToken = token;
   }
 
@@ -36,7 +35,6 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    console.log("accessToken", this.accessToken);
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers: {
@@ -76,6 +74,7 @@ class ApiService {
         method: "POST",
         body: JSON.stringify({
           ...data,
+          userId: 5,
         }),
       }
     );
@@ -90,6 +89,8 @@ class ApiService {
         method: "POST",
         body: JSON.stringify({
           ...data,
+          //Tech debt- have to remove this after check removed from backend
+          userId: 5,
         }),
       }
     );

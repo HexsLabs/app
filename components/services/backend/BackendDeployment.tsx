@@ -1,17 +1,23 @@
-import { useState } from 'react';
-import { apiService } from '../../../services/apiService';
-import { DeployCustomBackendRequest, DeploymentConfig, ProviderType } from '../../../services/types';
+import { useState } from "react";
+import { apiService } from "../../../services/apiService";
+import {
+  DeployCustomBackendRequest,
+  DeploymentConfig,
+  ProviderType,
+} from "../../../services/types";
 
 export default function BackendDeployment() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }]);
+  const [envVars, setEnvVars] = useState<{ key: string; value: string }[]>([
+    { key: "", value: "" },
+  ]);
 
   const handleDeploy = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     // Build environment variables object
     const env: Record<string, string> = {};
     envVars.forEach(({ key, value }) => {
@@ -21,43 +27,51 @@ export default function BackendDeployment() {
     });
 
     const config: DeploymentConfig = {
-      appPort: Number(formData.get('appPort')),
-      deploymentMode: formData.get('deploymentMode') as string || undefined,
-      deploymentDuration: formData.get('deploymentDuration') as string,
-      appCpuUnits: Number(formData.get('appCpuUnits')),
-      appMemorySize: formData.get('appMemorySize') as string,
-      appStorageSize: formData.get('appStorageSize') as string,
-      image: formData.get('image') as string,
+      appPort: Number(formData.get("appPort")),
+      deploymentMode: (formData.get("deploymentMode") as string) || undefined,
+      deploymentDuration: formData.get("deploymentDuration") as string,
+      appCpuUnits: Number(formData.get("appCpuUnits")),
+      appMemorySize: formData.get("appMemorySize") as string,
+      appStorageSize: formData.get("appStorageSize") as string,
+      image: formData.get("image") as string,
     };
 
     const data: DeployCustomBackendRequest = {
-      userId: 1, // Replace with actual user ID
-      repoUrl: formData.get('repoUrl') as string || undefined,
-      branchName: formData.get('branchName') as string || undefined,
+      userId: "1", // Replace with actual user ID
+      repoUrl: (formData.get("repoUrl") as string) || undefined,
+      branchName: (formData.get("branchName") as string) || undefined,
       env: Object.keys(env).length > 0 ? env : undefined,
       config,
-      provider: formData.get('provider') as ProviderType || undefined,
+      provider: (formData.get("provider") as ProviderType) || undefined,
     };
 
     try {
       setIsLoading(true);
       setError(null);
       setSuccess(null);
-      
+
       const response = await apiService.deployDefaultBackend(data);
-      setSuccess(`${response.status} - ${response.url ? `Deployed at ${response.url}` : ''}`);
+      setSuccess(
+        `${response.status} - ${response.url ? `Deployed at ${response.url}` : ""}`
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to deploy backend service');
+      setError(
+        err instanceof Error ? err.message : "Failed to deploy backend service"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const addEnvVar = () => {
-    setEnvVars([...envVars, { key: '', value: '' }]);
+    setEnvVars([...envVars, { key: "", value: "" }]);
   };
 
-  const updateEnvVar = (index: number, field: 'key' | 'value', value: string) => {
+  const updateEnvVar = (
+    index: number,
+    field: "key" | "value",
+    value: string
+  ) => {
     const newEnvVars = [...envVars];
     newEnvVars[index][field] = value;
     setEnvVars(newEnvVars);
@@ -71,13 +85,15 @@ export default function BackendDeployment() {
     <div className="space-y-6 p-6 bg-white rounded-lg shadow">
       <div>
         <h2 className="text-2xl font-bold mb-4">Deploy Backend Service</h2>
-        
+
         <form onSubmit={handleDeploy} className="space-y-4">
           {/* Repository Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Repository Information</h3>
             <div>
-              <label className="block text-sm font-medium mb-1">Repository URL (Optional)</label>
+              <label className="block text-sm font-medium mb-1">
+                Repository URL (Optional)
+              </label>
               <input
                 type="text"
                 name="repoUrl"
@@ -85,9 +101,11 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Branch Name</label>
+              <label className="block text-sm font-medium mb-1">
+                Branch Name
+              </label>
               <input
                 type="text"
                 name="branchName"
@@ -101,7 +119,9 @@ export default function BackendDeployment() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Deployment Configuration</h3>
             <div>
-              <label className="block text-sm font-medium mb-1">Application Port</label>
+              <label className="block text-sm font-medium mb-1">
+                Application Port
+              </label>
               <input
                 type="number"
                 name="appPort"
@@ -110,18 +130,22 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Deployment Mode (Optional)</label>
+              <label className="block text-sm font-medium mb-1">
+                Deployment Mode (Optional)
+              </label>
               <input
                 type="text"
                 name="deploymentMode"
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Deployment Duration</label>
+              <label className="block text-sm font-medium mb-1">
+                Deployment Duration
+              </label>
               <input
                 type="text"
                 name="deploymentDuration"
@@ -130,9 +154,11 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">CPU Units</label>
+              <label className="block text-sm font-medium mb-1">
+                CPU Units
+              </label>
               <input
                 type="number"
                 name="appCpuUnits"
@@ -141,9 +167,11 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Memory Size</label>
+              <label className="block text-sm font-medium mb-1">
+                Memory Size
+              </label>
               <input
                 type="text"
                 name="appMemorySize"
@@ -152,9 +180,11 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Storage Size</label>
+              <label className="block text-sm font-medium mb-1">
+                Storage Size
+              </label>
               <input
                 type="text"
                 name="appStorageSize"
@@ -163,9 +193,11 @@ export default function BackendDeployment() {
                 className="w-full px-3 py-2 border rounded"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium mb-1">Docker Image</label>
+              <label className="block text-sm font-medium mb-1">
+                Docker Image
+              </label>
               <input
                 type="text"
                 name="image"
@@ -184,14 +216,14 @@ export default function BackendDeployment() {
                 <input
                   type="text"
                   value={envVar.key}
-                  onChange={(e) => updateEnvVar(index, 'key', e.target.value)}
+                  onChange={(e) => updateEnvVar(index, "key", e.target.value)}
                   placeholder="Key"
                   className="flex-1 px-3 py-2 border rounded"
                 />
                 <input
                   type="text"
                   value={envVar.value}
-                  onChange={(e) => updateEnvVar(index, 'value', e.target.value)}
+                  onChange={(e) => updateEnvVar(index, "value", e.target.value)}
                   placeholder="Value"
                   className="flex-1 px-3 py-2 border rounded"
                 />
@@ -216,10 +248,7 @@ export default function BackendDeployment() {
           {/* Provider Selection */}
           <div>
             <label className="block text-sm font-medium mb-1">Provider</label>
-            <select
-              name="provider"
-              className="w-full px-3 py-2 border rounded"
-            >
+            <select name="provider" className="w-full px-3 py-2 border rounded">
               <option value="AUTO">Auto</option>
               <option value="AKASH">Akash</option>
               <option value="SPHERON">Spheron</option>
@@ -231,7 +260,7 @@ export default function BackendDeployment() {
             disabled={isLoading}
             className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
           >
-            {isLoading ? 'Deploying...' : 'Deploy Backend Service'}
+            {isLoading ? "Deploying..." : "Deploy Backend Service"}
           </button>
         </form>
 
@@ -249,4 +278,4 @@ export default function BackendDeployment() {
       </div>
     </div>
   );
-} 
+}
