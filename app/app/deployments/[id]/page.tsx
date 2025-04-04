@@ -41,22 +41,7 @@ export default function DeploymentDetailsPage() {
   const handleClose = () => {
     if (!deployment) return;
 
-    closeDeploymentMutation(Number(deployment.deploymentId), {
-      onSuccess: () => {
-        toast({
-          title: "Success",
-          description: "Deployment closed successfully",
-        });
-        fetchDeployment(); // refresh deployment data
-      },
-      onError: (error) => {
-        toast({
-          title: "Error",
-          description: "Failed to close deployment",
-          variant: "destructive",
-        });
-      },
-    });
+    closeDeploymentMutation(Number(deployment.deploymentId));
   };
 
   const copyToClipboard = async (text: string, label: string) => {

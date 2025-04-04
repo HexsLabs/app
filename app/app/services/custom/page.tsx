@@ -83,16 +83,7 @@ export default function CustomPage() {
       : currentRamUsageInMi + " Mi";
 
   const handleDelete = (deploymentId: string) => {
-    // tanstack query mutation
-    closeDeploymentMutation(Number(deploymentId), {
-      onSuccess: () => {
-        console.log(`Successfully closed deployment ${deploymentId}`);
-        // no need to manually refetch as the mutation will invalidate and refetch
-      },
-      onError: (error) => {
-        console.error(`Error closing deployment ${deploymentId}:`, error);
-      },
-    });
+    closeDeploymentMutation(Number(deploymentId));
   };
 
   return (

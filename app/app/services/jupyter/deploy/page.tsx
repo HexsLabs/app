@@ -47,10 +47,6 @@ export default function JupyterDeployment() {
   // Combined loading state
   const isLoading = isDefaultDeploying || isCustomDeploying;
 
-  function onDeploymentComplete() {
-    router.push("/app/services/jupyter");
-  }
-
   // Resource settings for custom deployment
   const [values, setValues] = useState<ResourceValueOptions>({
     cpuValue: String(CPU_CONSTRAINTS.DEFAULT),
@@ -79,19 +75,9 @@ export default function JupyterDeployment() {
     deployDefaultJupyter(
       { provider: selectedProvider },
       {
+        // redirect after successful deployment
         onSuccess: () => {
-          toast.success("Jupyter notebook deployed successfully", {
-            description: "Your default Jupyter instance has been created.",
-          });
-          onDeploymentComplete();
-        },
-        onError: (err) => {
-          toast.error("Deployment failed", {
-            description:
-              err instanceof Error
-                ? err.message
-                : "Failed to deploy Jupyter notebook",
-          });
+          router.push("/app/services/jupyter");
         },
       }
     );
@@ -114,19 +100,9 @@ export default function JupyterDeployment() {
     };
 
     deployCustomJupyter(data, {
+      // redirect after successful deployment
       onSuccess: () => {
-        toast.success("Jupyter notebook deployed successfully", {
-          description: "Your custom Jupyter instance has been created.",
-        });
-        onDeploymentComplete();
-      },
-      onError: (err) => {
-        toast.error("Deployment failed", {
-          description:
-            err instanceof Error
-              ? err.message
-              : "Failed to deploy custom Jupyter notebook",
-        });
+        router.push("/app/services/jupyter");
       },
     });
   };

@@ -82,16 +82,8 @@ export default function JupyterPage() {
       : currentRamUsageInMi + " Mi";
 
   const handleDelete = (deploymentId: string) => {
-    // Use the TanStack Query mutation
-    closeDeploymentMutation(Number(deploymentId), {
-      onSuccess: () => {
-        console.log(`Successfully closed deployment ${deploymentId}`);
-        // No need to manually refetch
-      },
-      onError: (error) => {
-        console.error(`Error closing deployment ${deploymentId}:`, error);
-      },
-    });
+    // hook will handle toasts and invalidation
+    closeDeploymentMutation(Number(deploymentId));
   };
 
   return (

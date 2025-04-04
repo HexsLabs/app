@@ -65,8 +65,9 @@ export default function BackendPage() {
     deploymentDuration: DURATION_CONSTRAINTS.DEFAULT_HOURS,
   });
 
-  const { mutate: createDeployment, isPending: loading } =
-    useCreateDeployment();
+  const { mutate: createDeployment, isPending: loading } = useCreateDeployment(
+    "/app/services/custom"
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,56 +97,16 @@ export default function BackendPage() {
         );
       }
 
-      createDeployment(
-        {
-          userId,
-          repoUrl,
-          branchName,
-          config,
-          env,
-        },
-        {
-          onSuccess: (response) => {
-            toast.message("Deployment created successfully", {
-              description: (
-                <div className="mt-2 space-y-2">
-                  <p className="font-medium">
-                    Your deployment has been created successfully!
-                  </p>
-                  {response.appUrl && (
-                    <p className="text-sm">
-                      🌐 App URL:{" "}
-                      <a
-                        href={response.appUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline"
-                      >
-                        {response.appUrl}
-                      </a>
-                    </p>
-                  )}
-                  {response.deploymentId && (
-                    <p className="text-sm">
-                      🔑 Lease ID: {response.deploymentId}
-                    </p>
-                  )}
-                </div>
-              ),
-            });
-            router.push("/app/services/custom");
-          },
-          onError: (error) => {
-            console.error("Error creating deployment:", error);
-            toast.error(
-              "Failed to create deployment. Check console for details."
-            );
-          },
-        }
-      );
+      createDeployment({
+        userId,
+        repoUrl,
+        branchName,
+        config,
+        env,
+      });
     } catch (error) {
-      console.error("Error preparing deployment:", error);
-      toast.error("Failed to prepare deployment. Check console for details.");
+      console.error("Error preparing deployment data:", error);
+      toast.error("Failed to prepare deployment data");
     }
   };
 
