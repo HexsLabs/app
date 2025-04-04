@@ -253,24 +253,32 @@ class ApiService {
           
           for (const line of lines) {
             if (line.startsWith('data: ')) {
-              const data = line.substring(6);
+              const data = line.substring(6).trim();
               
               if (data === '[DONE]') {
                 return { text: accumulatedText };
               }
               
+              // Skip empty data
+              if (!data) {
+                continue;
+              }
+              
               try {
+                // Ensure we're parsing valid JSON
                 const parsed = JSON.parse(data);
                 if (parsed.choices && 
-                    parsed.choices[0] && 
-                    parsed.choices[0].delta && 
-                    parsed.choices[0].delta.content) {
-                  const content = parsed.choices[0].delta.content;
-                  accumulatedText += content;
-                  onStream(content);
+                    parsed.choices[0]) {
+                  const deltaContent = parsed.choices[0]?.delta?.content || '';
+                  if (deltaContent) {
+                    accumulatedText += deltaContent;
+                    onStream(deltaContent);
+                  }
                 }
               } catch (e) {
                 console.error('Error parsing SSE data:', e, data);
+                // Continue processing other chunks instead of breaking
+                continue;
               }
             }
           }
