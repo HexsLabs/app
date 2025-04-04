@@ -228,7 +228,7 @@ export default function BackendPage() {
           disabled={loading}
           onClick={handleSubmit}
         >
-          <span>Deploy Backend</span>
+          <span>Deploy Service</span>
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </div>
@@ -268,13 +268,13 @@ export default function BackendPage() {
                 // disabled={!isJsonValid}
                 // disabled={true}
                 onClick={() => {
-                  console.log("clicked");
-                  toast(
-                    "To avail this feature please contact at contact@aquanode.io"
-                  );
+                  toast.message("Want to use custom deployment?", {
+                    description:
+                      "Contact us at contact@aquanode.io, or try our Standard deployment for free!",
+                  });
                 }}
               >
-                <span>Deploy Custom Backend</span>
+                <span>Deploy Service</span>
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -295,9 +295,9 @@ export default function BackendPage() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="section-title mb-2">Create Backend Deployment</h1>
+            <h1 className="section-title mb-2">Custom Service Deployment</h1>
             <p className="text-muted-foreground">
-              Deploy a backend service with your preferred configuration
+              Deploy a custom service with your preferred configuration
             </p>
           </div>
         </div>

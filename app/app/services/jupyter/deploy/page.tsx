@@ -268,10 +268,10 @@ export default function JupyterDeployment() {
                   // disabled={!isJsonValid}
                   // disabled={true}
                   onClick={() => {
-                    console.log("clicked");
-                    toast(
-                      "To avail this feature please contact at contact@aquanode.io"
-                    );
+                    toast.message("Want to use custom deployment?", {
+                      description:
+                        "Contact us at contact@aquanode.io, or try our Standard deployment for free!",
+                    });
                   }}
                 >
                   <span>Deploy Custom Backend</span>
