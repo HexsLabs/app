@@ -1,54 +1,56 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { api } from "../../../../lib/api";
 import { Deployment, ServiceType } from "@/services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import ServicePage from "@/components/services/common/ServicePage";
-import { isDeploymentActive } from "@/lib/deployment/utils";
+import {
+  useDeployments,
+  useCloseDeployment,
+} from "@/hooks/queries/useDeployments";
 
-export default function BackendPage() {
+export default function CustomPage() {
   const router = useRouter();
-  const [deployments, setDeployments] = useState<Deployment[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { user, isLoading: authLoading } = useAuth();
+  const envProvider = getProviderFromEnv();
 
-  const fetchDeployments = useCallback(async () => {
-    if (!user?.id) {
-      setError("Please sign in to view deployments");
-      setIsLoading(false);
-      return;
-    }
+  // tanstack to fetch deployments
+  const {
+    data: deployments = [],
+    isLoading,
+    error: queryError,
+    refetch: fetchDeployments,
+  } = useDeployments(user?.id || "", ServiceType.BACKEND, envProvider);
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      const envProvider = getProviderFromEnv();
-      const data = await api.getUserDeployments(
-        user.id,
-        ServiceType.BACKEND,
-        envProvider
-      );
-      // Ensure data is an array before setting it
-      setDeployments(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch deployments"
-      );
-      setDeployments([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
+  // mutation for deleting deployments
+  const { mutate: closeDeploymentMutation } = useCloseDeployment();
 
-  useEffect(() => {
-    if (!authLoading) {
-      fetchDeployments();
+  // error message if any
+  const error = queryError
+    ? queryError instanceof Error
+      ? queryError.message
+      : "Failed to fetch deployments"
+    : null;
+
+  const isDeploymentActive = (createdAt: string, duration: string): boolean => {
+    const createdAtDate = new Date(createdAt);
+    let durationSeconds = 0;
+
+    if (duration.endsWith("h")) {
+      durationSeconds = parseInt(duration) * 3600;
+    } else if (duration.endsWith("m")) {
+      durationSeconds = parseInt(duration) * 60;
+    } else if (duration.endsWith("s")) {
+      durationSeconds = parseInt(duration);
+    } else {
+      durationSeconds = parseInt(duration) || 0;
     }
-  }, [authLoading, fetchDeployments]);
+    const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
+    const now = new Date();
+    return endTime.getTime() > now.getTime();
+  };
 
   // Calculate stats for active deployments only
   const activeDeployments = Array.isArray(deployments)
@@ -62,6 +64,7 @@ export default function BackendPage() {
     (acc, curr) => acc + curr.cpu,
     0
   );
+
   const currentRamUsageInMi = activeDeployments.reduce((acc, curr) => {
     const memory = curr.memory;
 
@@ -74,20 +77,28 @@ export default function BackendPage() {
     }
   }, 0);
 
-  let currentRamUsage = currentRamUsageInMi + " Mi";
-  if (currentRamUsageInMi > 1024) {
-    currentRamUsage = (currentRamUsageInMi / 1024).toFixed(2) + " Gi";
-  }
+  const currentRamUsage =
+    currentRamUsageInMi > 1024
+      ? (currentRamUsageInMi / 1024).toFixed(2) + " Gi"
+      : currentRamUsageInMi + " Mi";
 
   const handleDelete = (deploymentId: string) => {
-    // TODO: Implement delete deployment
-    console.log(`Delete deployment ${deploymentId}`);
+    // tanstack query mutation
+    closeDeploymentMutation(Number(deploymentId), {
+      onSuccess: () => {
+        console.log(`Successfully closed deployment ${deploymentId}`);
+        // no need to manually refetch as the mutation will invalidate and refetch
+      },
+      onError: (error) => {
+        console.error(`Error closing deployment ${deploymentId}:`, error);
+      },
+    });
   };
 
   return (
     <ServicePage
-      title="Custom Service Deployment"
-      description="Deploy and manage your custom service instances"
+      title="Custom Backend Deployment"
+      description="Deploy and manage your custom backend instances"
       deployPath="/app/services/custom/deploy"
       user={user}
       isLoading={isLoading}

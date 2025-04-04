@@ -1,62 +1,62 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import {
-  getDeploymentById,
-  closeDeployment,
-  Deployment,
-} from "../../../../lib/api";
+import { Deployment } from "../../../../lib/api";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Copy, ExternalLink } from "lucide-react";
+import {
+  useDeployment,
+  useCloseDeployment,
+} from "@/hooks/queries/useDeployments";
 
 export default function DeploymentDetailsPage() {
   const params = useParams();
   const { toast } = useToast();
-  const [deployment, setDeployment] = useState<Deployment | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [closing, setClosing] = useState(false);
 
-  const fetchDeployment = useCallback(async () => {
-    try {
-      const data = await getDeploymentById(Number(params.id));
-      setDeployment(data);
-    } catch (error) {
+  // tanstack query to fetch deployment details
+  const {
+    data: deployment,
+    isLoading: loading,
+    error,
+    refetch: fetchDeployment,
+  } = useDeployment(Number(params.id));
+
+  // tanstack mutation for closing deployment
+  const { mutate: closeDeploymentMutation, isPending: closing } =
+    useCloseDeployment();
+
+  // error toast if fetching fails
+  useEffect(() => {
+    if (error) {
       toast({
         title: "Error",
         description: "Failed to fetch deployment details",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
     }
-  }, [params.id, toast]);
+  }, [error, toast]);
 
-  useEffect(() => {
-    fetchDeployment();
-  }, [fetchDeployment]);
-
-  const handleClose = async () => {
+  const handleClose = () => {
     if (!deployment) return;
 
-    setClosing(true);
-    try {
-      await closeDeployment(Number(deployment.deploymentId));
-      toast({
-        title: "Success",
-        description: "Deployment closed successfully",
-      });
-      fetchDeployment(); // Refresh deployment data
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to close deployment",
-        variant: "destructive",
-      });
-    } finally {
-      setClosing(false);
-    }
+    closeDeploymentMutation(Number(deployment.deploymentId), {
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "Deployment closed successfully",
+        });
+        fetchDeployment(); // refresh deployment data
+      },
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: "Failed to close deployment",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   const copyToClipboard = async (text: string, label: string) => {
