@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, InfoIcon } from "lucide-react";
 import { Deployment } from "@/services/types";
 import DeploymentStats from "./DeploymentStats";
 import DeploymentsList from "./DeploymentsList";
@@ -126,6 +126,13 @@ const ServicePage: React.FC<ServicePageProps> = ({
                   <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-foreground">
                     Your Deployments
                   </h2>
+
+                  <div className="flex items-center gap-2 py-2 px-3 mb-4 rounded-md bg-primary/5 border border-primary/10">
+                    <InfoIcon className="h-4 w-4 text-primary" />
+                    <p className="text-sm text-muted-foreground">
+                      Note: Deployments take a few minutes to become active
+                    </p>
+                  </div>
 
                   <DeploymentsList
                     isLoading={isLoading}

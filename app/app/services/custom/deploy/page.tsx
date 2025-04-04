@@ -11,7 +11,12 @@ import {
   ENVIRONMENT_VARS_DEFAULT,
 } from "@/constants/constrains";
 import { toast } from "sonner";
-import { createDeployment, DeploymentConfig, EnvironmentVars } from "@/lib/api";
+import {
+  createDeployment,
+  DeploymentConfig,
+  EnvironmentVars,
+  ProviderType,
+} from "@/lib/api";
 import { deploymentOptions } from "./helpers";
 import SourceControlSection from "@/components/services/backend/SourceControlSection";
 import EnviromentVariableSection from "@/components/services/backend/EnviromentVariableSection";
@@ -20,6 +25,14 @@ import SDLBuilder from "@/components/services/backend";
 import { ResourceValueOptions } from "./interface";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getProviderFromEnv } from "@/lib/utils";
 
 export default function BackendPage() {
   const { user, isLoading } = useAuth();
@@ -34,6 +47,11 @@ export default function BackendPage() {
   const [envVarsJson, setEnvVarsJson] = useState<string>(
     ENVIRONMENT_VARS_DEFAULT
   );
+
+  const defaultProvider = getProviderFromEnv();
+
+  const [selectedProvider, setSelectedProvider] =
+    useState<ProviderType>(defaultProvider);
 
   const router = useRouter();
 
@@ -318,6 +336,41 @@ export default function BackendPage() {
           {renderAuthContent(
             <div>
               {renderDeploymentOptions()}
+
+              <div className="mb-4 sm:mb-5">
+                <label className="block text-xs font-medium mb-1">
+                  Deployment Provider
+                </label>
+                <div className="w-full sm:w-1/3">
+                  <Select
+                    value={selectedProvider}
+                    onValueChange={(value) =>
+                      setSelectedProvider(value as ProviderType)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a provider" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {defaultProvider ? (
+                        <SelectItem value={defaultProvider}>
+                          {defaultProvider.charAt(0).toUpperCase() +
+                            defaultProvider.slice(1)}{" "}
+                          Network
+                        </SelectItem>
+                      ) : (
+                        <>
+                          <SelectItem value="auto">Auto (Default)</SelectItem>
+                          <SelectItem value="akash">Akash Network</SelectItem>
+                          <SelectItem value="spheron">
+                            Spheron Network
+                          </SelectItem>
+                        </>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
 
               {selectedOption === "default"
                 ? renderStandardDeployment()

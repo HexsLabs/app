@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import DeploymentsList from "@/components/services/common/DeploymentsList";
 import { isDeploymentActive } from "@/lib/deployment/utils";
+import { InfoIcon } from "lucide-react";
 
 interface DeploymentTableProps {
   userId: string;
@@ -72,6 +73,12 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-hidden">
+      <div className="flex items-center gap-2 py-2 px-3 mb-4 rounded-md bg-primary/5 border border-primary/10">
+        <InfoIcon className="h-4 w-4 text-primary" />
+        <p className="text-sm text-muted-foreground">
+          Note: Deployments take a few minutes to become active
+        </p>
+      </div>
       {!loading && deployments.length === 0 ? (
         <div className="text-center py-12 sm:py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
           <p className="text-base sm:text-lg text-muted-foreground">
