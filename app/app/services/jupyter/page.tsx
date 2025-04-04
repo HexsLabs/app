@@ -1,53 +1,37 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { api } from "../../../../lib/api";
 import { Deployment, ServiceType } from "@/services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import ServicePage from "@/components/services/common/ServicePage";
+import {
+  useDeployments,
+  useCloseDeployment,
+} from "@/hooks/queries/useDeployments";
 
 export default function JupyterPage() {
   const router = useRouter();
-  const [deployments, setDeployments] = useState<Deployment[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { user, isLoading: authLoading } = useAuth();
+  const envProvider = getProviderFromEnv();
 
-  const fetchDeployments = useCallback(async () => {
-    if (!user?.id) {
-      setError("Please sign in to view deployments");
-      setIsLoading(false);
-      return;
-    }
+  // Use TanStack Query to fetch deployments
+  const {
+    data: deployments = [],
+    isLoading,
+    error: queryError,
+    refetch: fetchDeployments,
+  } = useDeployments(user?.id || "", ServiceType.JUPYTER, envProvider);
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      const envProvider = getProviderFromEnv();
-      const data = await api.getUserDeployments(
-        user.id,
-        ServiceType.JUPYTER,
-        envProvider
-      );
-      // Ensure data is an array before setting it
-      setDeployments(Array.isArray(data) ? data : []);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch deployments"
-      );
-      setDeployments([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
+  const { mutate: closeDeploymentMutation } = useCloseDeployment();
 
-  useEffect(() => {
-    if (!authLoading) {
-      fetchDeployments();
-    }
-  }, [authLoading, fetchDeployments]);
+  // error message if any
+  const error = queryError
+    ? queryError instanceof Error
+      ? queryError.message
+      : "Failed to fetch deployments"
+    : null;
 
   const isDeploymentActive = (createdAt: string, duration: string): boolean => {
     const createdAtDate = new Date(createdAt);
@@ -98,8 +82,8 @@ export default function JupyterPage() {
       : currentRamUsageInMi + " Mi";
 
   const handleDelete = (deploymentId: string) => {
-    // TODO: Implement delete deployment
-    console.log(`Delete deployment ${deploymentId}`);
+    // hook will handle toasts and invalidation
+    closeDeploymentMutation(Number(deploymentId));
   };
 
   return (

@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { api } from "@/lib/api";
 import { DeployCustomJupyterRequest, ProviderType } from "@/services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import DeploymentOptionCard from "@/components/services/common/DeploymentOptionCard";
 import { ArrowRight, Layers, Server } from "lucide-react";
+import {
+  useDeployDefaultJupyter,
+  useDeployCustomJupyter,
+} from "@/hooks/queries/useJupyter";
 
 import {
   CPU_CONSTRAINTS,
@@ -27,7 +30,6 @@ import { ResourceValueOptions } from "../../custom/deploy/interface";
 import { useRouter } from "next/navigation";
 
 export default function JupyterDeployment() {
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedProvider, setSelectedProvider] =
     useState<ProviderType>(getProviderFromEnv());
   const { user } = useAuth();
@@ -35,9 +37,15 @@ export default function JupyterDeployment() {
     "default"
   );
   const router = useRouter();
-  function onDeploymentComplete() {
-    router.push("/app/services/jupyter");
-  }
+
+  // Use TanStack Query mutation hooks
+  const { mutate: deployDefaultJupyter, isPending: isDefaultDeploying } =
+    useDeployDefaultJupyter();
+  const { mutate: deployCustomJupyter, isPending: isCustomDeploying } =
+    useDeployCustomJupyter();
+
+  // Combined loading state
+  const isLoading = isDefaultDeploying || isCustomDeploying;
 
   // Resource settings for custom deployment
   const [values, setValues] = useState<ResourceValueOptions>({
@@ -63,67 +71,40 @@ export default function JupyterDeployment() {
     );
   }
 
-  const handleDefaultDeploy = async () => {
-    try {
-      setIsLoading(true);
-
-      const response = await api.deployDefaultJupyter({
-        provider: selectedProvider,
-      });
-
-      toast.success("Jupyter notebook deployed successfully", {
-        description: "Your default Jupyter instance has been created.",
-      });
-
-      onDeploymentComplete();
-    } catch (err) {
-      toast.error("Deployment failed", {
-        description:
-          err instanceof Error
-            ? err.message
-            : "Failed to deploy Jupyter notebook",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleDefaultDeploy = () => {
+    deployDefaultJupyter(
+      { provider: selectedProvider },
+      {
+        // redirect after successful deployment
+        onSuccess: () => {
+          router.push("/app/services/jupyter");
+        },
+      }
+    );
   };
 
-  const handleCustomDeploy = async () => {
-    try {
-      setIsLoading(true);
+  const handleCustomDeploy = () => {
+    // Calculate the duration
+    const duration = `${values.deploymentDuration}h`;
 
-      // Calculate the duration
-      const duration = `${values.deploymentDuration}h`;
+    // Format memory and storage size
+    const memorySize = `${values.memoryValue}${values.memoryUnit}`;
+    const storageSize = `${values.ephemeralValue}${values.ephemeralUnit}`;
 
-      // Format memory and storage size
-      const memorySize = `${values.memoryValue}${values.memoryUnit}`;
-      const storageSize = `${values.ephemeralValue}${values.ephemeralUnit}`;
+    const data: DeployCustomJupyterRequest = {
+      cpuUnits: Number(values.cpuValue),
+      memorySize: memorySize,
+      storageSize: storageSize,
+      duration: duration,
+      provider: selectedProvider,
+    };
 
-      const data: DeployCustomJupyterRequest = {
-        cpuUnits: Number(values.cpuValue),
-        memorySize: memorySize,
-        storageSize: storageSize,
-        duration: duration,
-        provider: selectedProvider,
-      };
-
-      const response = await api.deployCustomJupyter(data);
-
-      toast.success("Jupyter notebook deployed successfully", {
-        description: "Your custom Jupyter instance has been created.",
-      });
-
-      onDeploymentComplete();
-    } catch (err) {
-      toast.error("Deployment failed", {
-        description:
-          err instanceof Error
-            ? err.message
-            : "Failed to deploy custom Jupyter notebook",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    deployCustomJupyter(data, {
+      // redirect after successful deployment
+      onSuccess: () => {
+        router.push("/app/services/jupyter");
+      },
+    });
   };
 
   const defaultProvider = getProviderFromEnv();
