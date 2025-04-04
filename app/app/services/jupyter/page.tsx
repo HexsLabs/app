@@ -79,10 +79,23 @@ export default function JupyterPage() {
     (acc, curr) => acc + curr.cpu,
     0
   );
-  const currentRamUsage = activeDeployments.reduce(
-    (acc, curr) => acc + parseInt(curr.memory),
-    0
-  );
+
+  const currentRamUsageInMi = activeDeployments.reduce((acc, curr) => {
+    const memory = curr.memory;
+
+    if (memory.includes("Mi")) {
+      return acc + parseInt(memory.split("Mi")[0]);
+    } else if (memory.includes("Gi")) {
+      return acc + parseInt(memory.split("Gi")[0]) * 1024;
+    } else {
+      return acc + parseInt(memory);
+    }
+  }, 0);
+
+  const currentRamUsage =
+    currentRamUsageInMi > 1024
+      ? (currentRamUsageInMi / 1024).toFixed(2) + " Gi"
+      : currentRamUsageInMi + " Mi";
 
   const handleDelete = (deploymentId: string) => {
     // TODO: Implement delete deployment

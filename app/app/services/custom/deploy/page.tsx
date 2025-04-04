@@ -19,6 +19,7 @@ import ResourceSettingSection from "@/components/services/backend/ResourceSettin
 import SDLBuilder from "@/components/services/backend";
 import { ResourceValueOptions } from "./interface";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useRouter } from "next/navigation";
 
 export default function BackendPage() {
   const { user, isLoading } = useAuth();
@@ -33,6 +34,8 @@ export default function BackendPage() {
   const [envVarsJson, setEnvVarsJson] = useState<string>(
     ENVIRONMENT_VARS_DEFAULT
   );
+
+  const router = useRouter();
 
   // const [buildCommand, setBuildCommand] = useState<string>("npm run build");
   // const [startCommand, setStartCommand] = useState<string>("npm start");
@@ -112,6 +115,7 @@ export default function BackendPage() {
           </div>
         ),
       });
+      router.push("/app/services/custom");
     } catch (error) {
       console.error("Error creating deployment:", error);
       toast.error("Failed to create deployment. Check console for details.");

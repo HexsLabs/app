@@ -20,7 +20,7 @@ interface ServicePageProps {
   activeInstances: number;
   totalDeployments: number;
   currentCpuUsage: number;
-  currentRamUsage: number;
+  currentRamUsage: string;
   serviceName: string;
   onDelete?: (deploymentId: string) => void;
   router: any;
@@ -131,7 +131,6 @@ const ServicePage: React.FC<ServicePageProps> = ({
                     isLoading={isLoading}
                     error={error}
                     deployments={deployments}
-                    isDeploymentActive={isDeploymentActive}
                     onDelete={onDelete}
                     serviceName={serviceName}
                   />

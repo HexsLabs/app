@@ -4,24 +4,25 @@ import { Deployment } from "@/services/types";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import Skeleton from "./Skeleton";
-
+import { useRouter } from "next/navigation";
+import { isDeploymentActive } from "@/lib/deployment/utils";
 interface DeploymentsListProps {
   isLoading: boolean;
   error: string | null;
   deployments: Deployment[];
-  isDeploymentActive: (createdAt: string, duration: string) => boolean;
   onDelete?: (deploymentId: string) => void;
-  serviceName: string;
+  serviceName?: string;
 }
 
 const DeploymentsList: React.FC<DeploymentsListProps> = ({
   isLoading,
   error,
   deployments,
-  isDeploymentActive,
   onDelete,
   serviceName,
 }) => {
+  const router = useRouter();
+
   const renderSkeletonDeployments = () => (
     <div className="grid gap-4">
       {[1, 2, 3].map((i) => (
@@ -35,6 +36,7 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
             <Skeleton className="h-5 w-full max-w-[200px]" />
           </div>
           <div className="flex gap-3 self-end md:self-center">
+            <Skeleton className="h-9 w-24" />
             <Skeleton className="h-9 w-24" />
             <Skeleton className="h-9 w-24" />
           </div>
@@ -64,64 +66,68 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
 
   return (
     <div className="grid gap-4 w-full">
-      {deployments.map((deployment) => (
-        <div
-          key={deployment.deploymentId}
-          className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full overflow-hidden"
-        >
-          <div className="space-y-3 flex-grow min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-muted-foreground text-sm">ID:</span>
-              <Link
-                href={`/app/deployments/${deployment.deploymentId}`}
-                className="text-foreground hover:text-primary hover:underline font-medium truncate max-w-[180px] sm:max-w-[240px]"
-                title={deployment.deploymentId}
-              >
-                {deployment.deploymentId}
-              </Link>
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full ${
-                  isDeploymentActive(deployment.createdAt, deployment.duration)
-                    ? "bg-green-500/10 text-green-500"
-                    : "bg-red-500/10 text-red-500"
-                }`}
-              >
-                {isDeploymentActive(deployment.createdAt, deployment.duration)
-                  ? "Active"
-                  : "Expired"}
-              </span>
-            </div>
-            {deployment.appUrl && (
+      {deployments.map((deployment) => {
+        const deploymentActive = isDeploymentActive(
+          deployment.createdAt,
+          deployment.duration
+        );
+        return (
+          <div
+            key={deployment.deploymentId}
+            className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full overflow-hidden"
+          >
+            <div className="space-y-3 flex-grow min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-muted-foreground text-sm">URL:</span>
-                <a
-                  href={deployment.appUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-foreground hover:text-primary hover:underline truncate max-w-[180px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-md"
-                  title={deployment.appUrl}
+                <span className="text-muted-foreground text-sm">ID:</span>
+                <Link
+                  href={`/app/deployments/${deployment.deploymentId}`}
+                  className="text-foreground hover:text-primary hover:underline font-medium truncate max-w-[180px] sm:max-w-[240px]"
+                  title={deployment.deploymentId}
                 >
-                  {deployment.appUrl}
-                </a>
+                  {deployment.deploymentId}
+                </Link>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${
+                    deploymentActive
+                      ? "bg-green-500/10 text-green-500"
+                      : "bg-red-500/10 text-red-500"
+                  }`}
+                >
+                  {deploymentActive ? "Active" : "Expired"}
+                </span>
               </div>
-            )}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-muted-foreground text-sm">Created:</span>
-              <span className="text-muted-foreground/90">
-                {formatDistanceToNow(new Date(deployment.createdAt))} ago
-              </span>
+              {deployment.appUrl && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-muted-foreground text-sm">URL:</span>
+                  <a
+                    href={deployment.appUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground hover:text-primary hover:underline truncate max-w-[180px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-md"
+                    title={deployment.appUrl}
+                  >
+                    {deployment.appUrl}
+                  </a>
+                </div>
+              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-muted-foreground text-sm">Created:</span>
+                <span className="text-muted-foreground/90">
+                  {formatDistanceToNow(new Date(deployment.createdAt))} ago
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-muted-foreground text-sm">
+                  Resources:
+                </span>
+                <span className="text-muted-foreground/90 break-all sm:break-normal">
+                  {deployment.cpu} CPU | {deployment.memory} RAM |{" "}
+                  {deployment.storage} Storage
+                </span>
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-muted-foreground text-sm">Resources:</span>
-              <span className="text-muted-foreground/90 break-all sm:break-normal">
-                {deployment.cpu} CPU | {deployment.memory} RAM |{" "}
-                {deployment.storage} Storage
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3 self-end md:self-center mt-2 md:mt-0">
-            {deployment.appUrl &&
-              isDeploymentActive(deployment.createdAt, deployment.duration) && (
+            <div className="flex flex-wrap gap-3 self-end md:self-center mt-2 md:mt-0">
+              {deployment.appUrl && deploymentActive && (
                 <a
                   href={
                     serviceName === "JUPYTER"
@@ -140,17 +146,31 @@ const DeploymentsList: React.FC<DeploymentsListProps> = ({
                   </Button>
                 </a>
               )}
-            <Button
-              variant="outline"
-              size="sm"
-              className="hover-effect text-destructive hover:text-destructive px-5 w-full sm:w-auto"
-              onClick={() => onDelete && onDelete(deployment.deploymentId)}
-            >
-              Delete
-            </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="hover-effect px-5 w-full sm:w-auto"
+                onClick={() => {
+                  router.push(`/app/deployments/${deployment.deploymentId}`);
+                }}
+              >
+                View
+              </Button>
+              {deploymentActive && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="hover-effect text-destructive hover:text-destructive px-5 w-full sm:w-auto"
+                  onClick={() => onDelete && onDelete(deployment.deploymentId)}
+                >
+                  Stop
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

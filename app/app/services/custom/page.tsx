@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import ServicePage from "@/components/services/common/ServicePage";
+import { isDeploymentActive } from "@/lib/deployment/utils";
 
 export default function BackendPage() {
   const router = useRouter();
@@ -49,24 +50,6 @@ export default function BackendPage() {
     }
   }, [authLoading, fetchDeployments]);
 
-  const isDeploymentActive = (createdAt: string, duration: string): boolean => {
-    const createdAtDate = new Date(createdAt);
-    let durationSeconds = 0;
-
-    if (duration.endsWith("h")) {
-      durationSeconds = parseInt(duration) * 3600;
-    } else if (duration.endsWith("m")) {
-      durationSeconds = parseInt(duration) * 60;
-    } else if (duration.endsWith("s")) {
-      durationSeconds = parseInt(duration);
-    } else {
-      durationSeconds = parseInt(duration) || 0;
-    }
-    const endTime = new Date(createdAtDate.getTime() + durationSeconds * 1000);
-    const now = new Date();
-    return endTime.getTime() > now.getTime();
-  };
-
   // Calculate stats for active deployments only
   const activeDeployments = Array.isArray(deployments)
     ? deployments.filter(
@@ -79,10 +62,22 @@ export default function BackendPage() {
     (acc, curr) => acc + curr.cpu,
     0
   );
-  const currentRamUsage = activeDeployments.reduce(
-    (acc, curr) => acc + parseInt(curr.memory),
-    0
-  );
+  const currentRamUsageInMi = activeDeployments.reduce((acc, curr) => {
+    const memory = curr.memory;
+
+    if (memory.includes("Mi")) {
+      return acc + parseInt(memory.split("Mi")[0]);
+    } else if (memory.includes("Gi")) {
+      return acc + parseInt(memory.split("Gi")[0]) * 1024;
+    } else {
+      return acc + parseInt(memory);
+    }
+  }, 0);
+
+  let currentRamUsage = currentRamUsageInMi + " Mi";
+  if (currentRamUsageInMi > 1024) {
+    currentRamUsage = (currentRamUsageInMi / 1024).toFixed(2) + " Gi";
+  }
 
   const handleDelete = (deploymentId: string) => {
     // TODO: Implement delete deployment
@@ -93,7 +88,7 @@ export default function BackendPage() {
     <ServicePage
       title="Custom Service Deployment"
       description="Deploy and manage your custom service instances"
-      deployPath="/app/services/backend/deploy"
+      deployPath="/app/services/custom/deploy"
       user={user}
       isLoading={isLoading}
       authLoading={authLoading}

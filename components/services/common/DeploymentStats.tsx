@@ -6,7 +6,7 @@ interface DeploymentStatsProps {
   activeInstances: number;
   totalDeployments: number;
   currentCpuUsage: number;
-  currentRamUsage: number;
+  currentRamUsage: string;
 }
 
 const DeploymentStats: React.FC<DeploymentStatsProps> = ({
@@ -53,7 +53,7 @@ const DeploymentStats: React.FC<DeploymentStatsProps> = ({
         </h3>
         <div>
           <p className="text-xl font-semibold text-foreground">
-            {currentCpuUsage} CPU | {currentRamUsage} GB RAM
+            {currentCpuUsage} CPU | {currentRamUsage} RAM
           </p>
         </div>
       </div>

@@ -3,18 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { useEffect, useState } from "react";
-import { getDeployments } from "../../../lib/api";
+import { Deployment, getDeployments } from "../../../lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
-
-interface Deployment {
-  deploymentId: string;
-  appUrl: string;
-  createdAt?: string;
-  provider?: string;
-}
+import DeploymentsList from "@/components/services/common/DeploymentsList";
+import { isDeploymentActive } from "@/lib/deployment/utils";
 
 interface DeploymentTableProps {
   userId: string;
@@ -65,19 +60,19 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-8 sm:py-12 text-muted-foreground">
-        <div className="animate-pulse text-sm sm:text-base">
-          Loading deployments...
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center py-8 sm:py-12 text-muted-foreground">
+  //       <div className="animate-pulse text-sm sm:text-base">
+  //         Loading deployments...
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-hidden">
-      {deployments.length === 0 ? (
+      {!loading && deployments.length === 0 ? (
         <div className="text-center py-12 sm:py-20 bg-secondary/10 rounded-xl border border-border/40 backdrop-blur-sm">
           <p className="text-base sm:text-lg text-muted-foreground">
             {envProvider ? (
@@ -96,75 +91,12 @@ function DeploymentTable({ userId }: DeploymentTableProps) {
         </div>
       ) : (
         <div className="grid gap-4 w-full">
-          {deployments.map((deployment, index) => (
-            <div
-              key={index}
-              className="dashboard-card flex flex-col md:flex-row md:items-center md:justify-between gap-4 w-full overflow-hidden"
-            >
-              <div className="space-y-3 flex-grow min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-muted-foreground text-sm">ID:</span>
-                  <Link
-                    href={`/app/deployments/${deployment.deploymentId}`}
-                    className="text-foreground hover:text-primary hover:underline font-medium truncate max-w-[180px] sm:max-w-[240px]"
-                    title={deployment.deploymentId}
-                  >
-                    {deployment.deploymentId}
-                  </Link>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-muted-foreground text-sm">URL:</span>
-                  <a
-                    href={deployment.appUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-foreground hover:text-primary hover:underline truncate max-w-[180px] sm:max-w-[240px] md:max-w-[300px] lg:max-w-md"
-                    title={deployment.appUrl}
-                  >
-                    {deployment.appUrl}
-                  </a>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-muted-foreground text-sm">
-                    Created:
-                  </span>
-                  <span className="text-muted-foreground/90">
-                    {formatDate(deployment.createdAt)}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-3 self-end md:self-center mt-2 md:mt-0">
-                <Link
-                  href={`/app/deployments/${deployment.deploymentId}`}
-                  passHref
-                  className="w-full sm:w-auto"
-                >
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="hover-effect px-5 w-full sm:w-auto"
-                  >
-                    View
-                  </Button>
-                </Link>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hover-effect text-destructive hover:text-destructive px-5 w-full sm:w-auto"
-                  onClick={() => {
-                    // TODO: Implement delete deployment
-                    toast({
-                      title: "Not implemented",
-                      description:
-                        "Delete deployment functionality coming soon",
-                    });
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
-          ))}
+          <DeploymentsList
+            isLoading={loading}
+            error={null}
+            deployments={deployments}
+            onDelete={() => {}}
+          />
         </div>
       )}
     </div>

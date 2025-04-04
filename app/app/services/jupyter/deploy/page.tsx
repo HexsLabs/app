@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ResourceSettingSection from "@/components/services/backend/ResourceSettingSection";
-import { ResourceValueOptions } from "../../backend/deploy/interface";
+import { ResourceValueOptions } from "../../custom/deploy/interface";
 import { useRouter } from "next/navigation";
 
 export default function JupyterDeployment() {

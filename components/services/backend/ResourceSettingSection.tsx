@@ -16,7 +16,7 @@ import {
   Unit,
 } from "@/constants/constrains";
 import { useState } from "react";
-import { ResourceValueOptions } from "@/app/app/services/backend/deploy/interface";
+import { ResourceValueOptions } from "@/app/app/services/custom/deploy/interface";
 
 interface ResourceSettingSectionProps {
   values: ResourceValueOptions;
