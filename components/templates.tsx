@@ -26,7 +26,8 @@ export const templates: Template[] = [
     url: "/app/templates/express-calculator?from=/app/templates",
     details: {
       repoUrl: "https://github.com/Aquanodeio/templates.git",
-      branchName: "js-calculator-server",
+      runCommands: "cd javascript-calculator-server && npm install && npm start",
+      branchName: "main",
       appPort: "3000",
       memorySize: "1Gi",
       cpuUnits: "0.5",
@@ -40,8 +41,8 @@ export const templates: Template[] = [
     url: "/app/templates/streamlit-calculator?from=/app/templates",
     details: {
       repoUrl: "https://github.com/Aquanodeio/templates.git",
-      branchName: "streamlit-example",
-      runCommands: "pip3 install -r requirements.txt && streamlit run main.py",
+      branchName: "main",
+      runCommands: "cd python-calculator-server && pip3 install -r requirements.txt && streamlit run main.py",
       appPort: "8501",
       memorySize: "1Gi",
       cpuUnits: "0.5",
