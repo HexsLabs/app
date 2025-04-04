@@ -16,7 +16,7 @@ import {
   Unit,
 } from "@/constants/constrains";
 import { useState } from "react";
-import { ResourceValueOptions } from "@/app/app/services/backend/interface";
+import { ResourceValueOptions } from "@/app/app/services/backend/deploy/interface";
 
 interface ResourceSettingSectionProps {
   values: ResourceValueOptions;
@@ -296,10 +296,10 @@ export default function ResourceSettingSection({
                   {hours === 1
                     ? "1 hour"
                     : hours === 24
-                    ? "1 day"
-                    : hours === 72
-                    ? "3 days"
-                    : "7 days"}
+                      ? "1 day"
+                      : hours === 72
+                        ? "3 days"
+                        : "7 days"}
                 </button>
               ))}
             </div>
