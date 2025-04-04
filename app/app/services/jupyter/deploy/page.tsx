@@ -7,7 +7,7 @@ import { DeployCustomJupyterRequest, ProviderType } from "@/services/types";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { getProviderFromEnv } from "@/lib/utils";
 import DeploymentOptionCard from "@/components/services/common/DeploymentOptionCard";
-import { Layers, Server } from "lucide-react";
+import { ArrowRight, Layers, Server } from "lucide-react";
 
 import {
   CPU_CONSTRAINTS,
@@ -263,11 +263,19 @@ export default function JupyterDeployment() {
 
               <div className="flex justify-end mt-5">
                 <Button
+                  size="lg"
                   className="btn-primary shadow-lg shadow-primary/10 hover-effect"
-                  onClick={handleCustomDeploy}
-                  disabled={isLoading}
+                  // disabled={!isJsonValid}
+                  // disabled={true}
+                  onClick={() => {
+                    console.log("clicked");
+                    toast(
+                      "To avail this feature please contact at contact@aquanode.io"
+                    );
+                  }}
                 >
-                  {isLoading ? "Deploying..." : "Deploy Custom Instance"}
+                  <span>Deploy Custom Backend</span>
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>

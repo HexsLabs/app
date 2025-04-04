@@ -91,8 +91,8 @@ export default function BackendPage() {
 
   return (
     <ServicePage
-      title="Backend Service Deployment"
-      description="Deploy and manage your backend service instances"
+      title="Custom Service Deployment"
+      description="Deploy and manage your custom service instances"
       deployPath="/app/services/backend/deploy"
       user={user}
       isLoading={isLoading}

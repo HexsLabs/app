@@ -20,9 +20,9 @@ const ServicesPage = () => {
   return (
     <section className="min-h-screen bg-background text-foreground py-12">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="section-title text-center">Available Services</h2>
+        <h2 className="section-title text-center">Available Aqua Services</h2>
         <p className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
-          Select a service to deploy and manage your applications
+          Select Aqua service to deploy and manage
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((service, index) => (
