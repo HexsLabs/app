@@ -1,12 +1,26 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Paperclip, ArrowUp, Bot, User, ExternalLink, Server, Loader2 } from "lucide-react";
+import {
+  Paperclip,
+  ArrowUp,
+  Bot,
+  User,
+  ExternalLink,
+  Server,
+  Loader2,
+} from "lucide-react";
 import { apiService } from "@/services/apiService";
 import { ChatMessage } from "@/services/types";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "../../../components/ui/badge";
 
@@ -26,67 +40,78 @@ interface DeploymentError {
 }
 
 // Extract deployment data from special tags in the message
-const extractDeploymentData = (content: string): {
-  status: 'pending' | 'complete' | 'error' | null;
+const extractDeploymentData = (
+  content: string
+): {
+  status: "pending" | "complete" | "error" | null;
   data: DeploymentInfo | DeploymentError | null;
 } => {
   // Check for pending deployment
-  const pendingMatch = content.match(/<DEPLOYMENT_PENDING>([\s\S]*?)<\/DEPLOYMENT_PENDING>/);
+  const pendingMatch = content.match(
+    /<DEPLOYMENT_PENDING>([\s\S]*?)<\/DEPLOYMENT_PENDING>/
+  );
   if (pendingMatch) {
     try {
       return {
-        status: 'pending',
-        data: JSON.parse(pendingMatch[1]) as DeploymentInfo
+        status: "pending",
+        data: JSON.parse(pendingMatch[1]) as DeploymentInfo,
       };
     } catch (e) {
-      console.error('Failed to parse pending deployment data:', e);
+      console.error("Failed to parse pending deployment data:", e);
     }
   }
-  
+
   // Check for completed deployment
-  const completeMatch = content.match(/<DEPLOYMENT_COMPLETE>([\s\S]*?)<\/DEPLOYMENT_COMPLETE>/);
+  const completeMatch = content.match(
+    /<DEPLOYMENT_COMPLETE>([\s\S]*?)<\/DEPLOYMENT_COMPLETE>/
+  );
   if (completeMatch) {
     try {
       return {
-        status: 'complete',
-        data: JSON.parse(completeMatch[1]) as DeploymentInfo
+        status: "complete",
+        data: JSON.parse(completeMatch[1]) as DeploymentInfo,
       };
     } catch (e) {
-      console.error('Failed to parse complete deployment data:', e);
+      console.error("Failed to parse complete deployment data:", e);
     }
   }
-  
+
   // Check for deployment error
-  const errorMatch = content.match(/<DEPLOYMENT_ERROR>([\s\S]*?)<\/DEPLOYMENT_ERROR>/);
+  const errorMatch = content.match(
+    /<DEPLOYMENT_ERROR>([\s\S]*?)<\/DEPLOYMENT_ERROR>/
+  );
   if (errorMatch) {
     try {
       return {
-        status: 'error',
-        data: JSON.parse(errorMatch[1]) as DeploymentError
+        status: "error",
+        data: JSON.parse(errorMatch[1]) as DeploymentError,
       };
     } catch (e) {
-      console.error('Failed to parse deployment error data:', e);
+      console.error("Failed to parse deployment error data:", e);
     }
   }
-  
+
   return { status: null, data: null };
 };
 
 // Remove deployment tags from message for display
 const cleanMessageContent = (content: string): string => {
   return content
-    .replace(/<DEPLOYMENT_PENDING>[\s\S]*?<\/DEPLOYMENT_PENDING>/g, '')
-    .replace(/<DEPLOYMENT_COMPLETE>[\s\S]*?<\/DEPLOYMENT_COMPLETE>/g, '')
-    .replace(/<DEPLOYMENT_ERROR>[\s\S]*?<\/DEPLOYMENT_ERROR>/g, '')
+    .replace(/<DEPLOYMENT_PENDING>[\s\S]*?<\/DEPLOYMENT_PENDING>/g, "")
+    .replace(/<DEPLOYMENT_COMPLETE>[\s\S]*?<\/DEPLOYMENT_COMPLETE>/g, "")
+    .replace(/<DEPLOYMENT_ERROR>[\s\S]*?<\/DEPLOYMENT_ERROR>/g, "")
     .trim();
 };
 
 // Deployment status card component
-const DeploymentStatusCard = ({ status, data }: { 
-  status: 'pending' | 'complete' | 'error';
+const DeploymentStatusCard = ({
+  status,
+  data,
+}: {
+  status: "pending" | "complete" | "error";
   data: DeploymentInfo | DeploymentError;
 }) => {
-  if (status === 'pending') {
+  if (status === "pending") {
     const depInfo = data as DeploymentInfo;
     return (
       <Card className="mt-4 border-primary/20 bg-primary/5">
@@ -99,8 +124,15 @@ const DeploymentStatusCard = ({ status, data }: {
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Repository:</span>
-            <Link href={depInfo.repoUrl} target="_blank" className="flex items-center gap-1 text-primary hover:underline">
-              {depInfo.repoUrl.replace(/(https?:\/\/)?(www\.)?(github|gitlab)\.com\//, '')}
+            <Link
+              href={depInfo.repoUrl}
+              target="_blank"
+              className="flex items-center gap-1 text-primary hover:underline"
+            >
+              {depInfo.repoUrl.replace(
+                /(https?:\/\/)?(www\.)?(github|gitlab)\.com\//,
+                ""
+              )}
               <ExternalLink size={12} />
             </Link>
           </div>
@@ -111,12 +143,16 @@ const DeploymentStatusCard = ({ status, data }: {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Resources:</span>
             <span>
-              {depInfo.cpuUnits} CPU{depInfo.cpuUnits > 1 ? 's' : ''}, {depInfo.memorySize} RAM, {depInfo.storageSize} Storage
+              {depInfo.cpuUnits} CPU{depInfo.cpuUnits > 1 ? "s" : ""},{" "}
+              {depInfo.memorySize} RAM, {depInfo.storageSize} Storage
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
-            <Badge variant="outline" className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20">
+            <Badge
+              variant="outline"
+              className="bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-500/20"
+            >
               <Loader2 size={12} className="mr-1 animate-spin" />
               Processing
             </Badge>
@@ -124,7 +160,7 @@ const DeploymentStatusCard = ({ status, data }: {
         </CardContent>
       </Card>
     );
-  } else if (status === 'complete') {
+  } else if (status === "complete") {
     const depInfo = data as DeploymentInfo;
     return (
       <Card className="mt-4 border-primary/20 bg-primary/5">
@@ -137,8 +173,15 @@ const DeploymentStatusCard = ({ status, data }: {
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Repository:</span>
-            <Link href={depInfo.repoUrl} target="_blank" className="flex items-center gap-1 text-primary hover:underline">
-              {depInfo.repoUrl.replace(/(https?:\/\/)?(www\.)?(github|gitlab)\.com\//, '')}
+            <Link
+              href={depInfo.repoUrl}
+              target="_blank"
+              className="flex items-center gap-1 text-primary hover:underline"
+            >
+              {depInfo.repoUrl.replace(
+                /(https?:\/\/)?(www\.)?(github|gitlab)\.com\//,
+                ""
+              )}
               <ExternalLink size={12} />
             </Link>
           </div>
@@ -149,21 +192,25 @@ const DeploymentStatusCard = ({ status, data }: {
           <div className="flex justify-between">
             <span className="text-muted-foreground">Resources:</span>
             <span>
-              {depInfo.cpuUnits} CPU{depInfo.cpuUnits > 1 ? 's' : ''}, {depInfo.memorySize} RAM, {depInfo.storageSize} Storage
+              {depInfo.cpuUnits} CPU{depInfo.cpuUnits > 1 ? "s" : ""},{" "}
+              {depInfo.memorySize} RAM, {depInfo.storageSize} Storage
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
-            <Badge variant="outline" className="bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20">
+            <Badge
+              variant="outline"
+              className="bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-500/20"
+            >
               Completed
             </Badge>
           </div>
         </CardContent>
         {depInfo.appUrl && (
           <CardFooter className="pt-2">
-            <Button 
-              variant="default" 
-              size="sm" 
+            <Button
+              variant="default"
+              size="sm"
               className="w-full gap-1"
               asChild
             >
@@ -201,7 +248,8 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      content: "Hello! I'm your AI assistant. I can help you deploy your applications on Aquanode's decentralized infrastructure. Simply share a GitHub or GitLab repository URL, and I'll handle the deployment for you. What would you like to deploy today?",
+      content:
+        "Hello! I'm your AI assistant. I can help you deploy your applications on Aquanode's decentralized infrastructure. Simply share a GitHub or GitLab repository URL, and I'll handle the deployment for you. What would you like to deploy today?",
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -245,7 +293,7 @@ const ChatInterface = () => {
         content: `File attached: ${files[0].name}`,
         timestamp: new Date().toISOString(),
       };
-      setMessages(prev => [...prev, userMessage]);
+      setMessages((prev) => [...prev, userMessage]);
       // TODO: Implement file upload functionality
       toast({
         title: "File Upload",
@@ -270,7 +318,7 @@ const ChatInterface = () => {
       timestamp: new Date().toISOString(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
@@ -280,14 +328,14 @@ const ChatInterface = () => {
       content: "",
       timestamp: new Date().toISOString(),
     };
-    
+
     // Add the assistant message to the state
-    setMessages(prev => [...prev, tempAssistantMessage]);
-    
+    setMessages((prev) => [...prev, tempAssistantMessage]);
+
     try {
       // Create a local reference to track content to avoid state closure issues
       let currentContent = "";
-      
+
       await apiService.sendChatMessage(
         {
           messages: [...messages, userMessage],
@@ -295,9 +343,9 @@ const ChatInterface = () => {
         (chunk) => {
           // Accumulate content locally to avoid state closure issues
           currentContent += chunk;
-          
+
           // Update the last message with the complete content so far
-          setMessages(prev => {
+          setMessages((prev) => {
             const newMessages = [...prev];
             const lastMessage = newMessages[newMessages.length - 1];
             if (lastMessage.role === "assistant") {
@@ -314,9 +362,9 @@ const ChatInterface = () => {
         description: "Failed to send message",
         variant: "destructive",
       });
-      
+
       // Remove the assistant message if there was an error
-      setMessages(prev => prev.slice(0, -1));
+      setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -336,16 +384,26 @@ const ChatInterface = () => {
 
         {/* Chat messages area */}
         <div className="flex-1 overflow-y-auto mb-6 rounded-xl bg-secondary/5 border border-border/20 p-4 shadow-sm">
+          <div className="flex items-center justify-center mb-3">
+            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-primary/5 border border-primary/10 text-sm shadow-sm">
+              <Server size={14} className="text-primary" />
+              <p className="text-muted-foreground font-medium">
+                Only works with Custom Services currently
+              </p>
+            </div>
+          </div>
           <div className="max-w-3xl mx-auto space-y-4">
             {messages.map((message, index) => {
-              const deploymentData = message.role === 'assistant' 
-                ? extractDeploymentData(message.content)
-                : { status: null, data: null };
-              
-              const displayContent = message.role === 'assistant'
-                ? cleanMessageContent(message.content)
-                : message.content;
-                
+              const deploymentData =
+                message.role === "assistant"
+                  ? extractDeploymentData(message.content)
+                  : { status: null, data: null };
+
+              const displayContent =
+                message.role === "assistant"
+                  ? cleanMessageContent(message.content)
+                  : message.content;
+
               return (
                 <div
                   key={index}
@@ -366,14 +424,16 @@ const ChatInterface = () => {
                         : "bg-secondary/20 text-foreground"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{displayContent}</p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {displayContent}
+                    </p>
                     <span className="text-xs opacity-70 mt-1 block">
                       {new Date(message.timestamp || "").toLocaleTimeString()}
                     </span>
-                    
+
                     {/* Deployment Status Card */}
                     {deploymentData.status && deploymentData.data && (
-                      <DeploymentStatusCard 
+                      <DeploymentStatusCard
                         status={deploymentData.status}
                         data={deploymentData.data}
                       />
