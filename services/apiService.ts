@@ -12,6 +12,9 @@ import {
   EnvironmentVars,
   DeploymentConfig,
   ProviderType,
+  ChatRequest,
+  ChatResponse,
+  ChatMessage,
 } from "./types";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3080";
 
@@ -195,6 +198,113 @@ class ApiService {
         provider: provider || null,
       }),
     });
+  }
+
+  // AI Chat Services
+  async sendChatMessage(
+    request: ChatRequest,
+    onStream?: (text: string) => void
+  ): Promise<ChatResponse> {
+    if (onStream) {
+      // Streaming request
+      const response = await fetch(`${API_BASE_URL}/api/ai/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(this.accessToken && {
+            Authorization: `Bearer ${this.accessToken}`,
+          }),
+        },
+        body: JSON.stringify({
+          ...request,
+          stream: true,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response
+          .json()
+          .catch(() => ({ message: "An unknown error occurred" }));
+        throw new Error(error.message || "An error occurred");
+      }
+
+      if (!response.body) {
+        throw new Error("Response body is null");
+      }
+
+      // Process the stream using the ReadableStream API
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let accumulatedText = "";
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          // Decode the chunk and add to buffer
+          buffer += decoder.decode(value, { stream: true });
+          
+          // Process complete lines in the buffer
+          const lines = buffer.split('\n');
+          // Keep the last potentially incomplete line in the buffer
+          buffer = lines.pop() || '';
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.substring(6);
+              
+              if (data === '[DONE]') {
+                return { text: accumulatedText };
+              }
+              
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.choices && 
+                    parsed.choices[0] && 
+                    parsed.choices[0].delta && 
+                    parsed.choices[0].delta.content) {
+                  const content = parsed.choices[0].delta.content;
+                  accumulatedText += content;
+                  onStream(content);
+                }
+              } catch (e) {
+                console.error('Error parsing SSE data:', e, data);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Stream reading error:', error);
+        throw error;
+      } finally {
+        reader.releaseLock();
+      }
+
+      return { text: accumulatedText };
+    } else {
+      // Non-streaming request
+      return this.request<ChatResponse>("/api/ai/chat/completions", {
+        method: "POST",
+        body: JSON.stringify({
+          ...request,
+          stream: false,
+        }),
+      });
+    }
+  }
+
+  async getChatHistory(): Promise<ChatMessage[]> {
+    // Since the backend doesn't have a history endpoint yet,
+    // we'll return an empty array for now
+    return [];
+  }
+
+  async clearChatHistory(): Promise<void> {
+    // Since the backend doesn't have a clear history endpoint yet,
+    // we'll do nothing for now
+    return;
   }
 }
 

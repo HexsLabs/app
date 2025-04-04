@@ -92,3 +92,21 @@ export interface GetDeploymentsRequest {
   type?: ServiceType | null;
   provider?: ProviderType | null;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp?: string;
+}
+
+export interface ChatRequest {
+  messages: ChatMessage[];
+  model?: string;
+  temperature?: number;
+  max_tokens?: number;
+}
+
+export interface ChatResponse {
+  text: string;
+  error?: string;
+}
