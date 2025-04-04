@@ -238,10 +238,10 @@ export default function BackendPage() {
   const renderCustomDeployment = () => (
     <div className="dashboard-card subtle-glow mb-8">
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="mb-6">
+        {/* <TabsList className="mb-6">
           <TabsTrigger value="basic">Basic Deployment</TabsTrigger>
           <TabsTrigger value="advanced">Advanced Deployment</TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
         <TabsContent value="basic">
           <div className="space-y-6">
