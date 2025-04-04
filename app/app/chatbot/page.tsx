@@ -384,14 +384,14 @@ const ChatInterface = () => {
 
         {/* Chat messages area */}
         <div className="flex-1 overflow-y-auto mb-6 rounded-xl bg-secondary/5 border border-border/20 p-4 shadow-sm">
-          <div className="flex items-center justify-center mb-3">
+          {/* <div className="flex items-center justify-center mb-3">
             <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-primary/5 border border-primary/10 text-sm shadow-sm">
               <Server size={14} className="text-primary" />
               <p className="text-muted-foreground font-medium">
                 Only works with Custom Services currently
               </p>
             </div>
-          </div>
+          </div> */}
           <div className="max-w-3xl mx-auto space-y-4">
             {messages.map((message, index) => {
               const deploymentData =
